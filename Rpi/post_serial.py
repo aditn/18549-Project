@@ -3,20 +3,22 @@ import json
 import datetime
 
 import serial
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
 from time import sleep
 
-pin = 16
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(pin, GPIO.BCM)
+#pin = 16
+#GPIO.setwarnings(False)
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setup(pin, GPIO.BCM)
 
-ser = serial.Serial('/dev/ttyACM0', 115200, 3.0)
-s = [0]
-content_count = 0
+ser = serial.Serial('/dev/ttyS0', 115200)
+#s = [0]
+#content_count = 0
   
+
 URL = "http://localhost:3000/"
-      
+
+sleep(3)
 data = {}
 a = []
 b = []
