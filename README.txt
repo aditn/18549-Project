@@ -3,4 +3,4 @@ Sample demo JSON:
  'sensor2': <float>,
  'sensor3': <float>,
  'sensor4': <float>,
- 'timestamp': <datetime>}
+ 'timestamp': <String>}
