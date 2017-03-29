@@ -2,9 +2,9 @@
   main.c
 */
 
-//#include "serial.h"
+#include "serial.h"
 #include "sensor.c"
-#include "I2C-master-lib-master/i2c_master.c"
+//#include "I2C-master-lib-master/i2c_master.c"
 #include "uart_test.c"
 #include <avr/io.h>
 #include <util/twi.h>
@@ -33,6 +33,10 @@
   }
 }*/
 
+
+
+uint16_t adc_read(uint8_t adcx);
+
 uint16_t adc_read(uint8_t adcx) {
   /* adcx is the analog pin we want to use.  ADMUX's first few bits are
    * the binary representations of the numbers of the pins so we can
@@ -57,6 +61,17 @@ uint16_t adc_read(uint8_t adcx) {
 
   /* Finally, we return the converted value to the calling function. */
   return adcV;
+}
+
+
+void collectforceData(dataStruct* data){
+  // use ADC here later
+
+  // using fake data for now
+  dataStruct.fSensor0 = 10;
+  dataStruct.fSensor1 = 20;
+  dataStruct.fSensor2 = 30;
+  dataStruct.fSensor3 = 40;
 }
 
 int main(void)
@@ -110,6 +125,11 @@ int main(void)
   uint8_t pd2 = 0;
   uint8_t waitUntilRed = 0;
   uint8_t waitUntilGreen = 0;
+  
+  // Force Sensor Data struct
+  dataStruct fData;
+  
+  
   /* continually check if the ADC value is greater than the
    * defined ADC_THRESHOLD value above.  If it is turn the LED on,
    * if it isn't turn it off. */
@@ -157,6 +177,12 @@ int main(void)
         LED_both_off();
       }
       else if(input == 'a'){ //accelerometer
+      }
+      else if(input == 'f'){ //get force sensor data + send to RPi
+        // use ADC here but for now send fake data
+        collectforceData(&fData);
+        sendData(&fData);
+
       }
       PORTB ^= 0x01;            
   }

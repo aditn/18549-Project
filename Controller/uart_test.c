@@ -35,10 +35,20 @@ char uart_getchar(void) {
    return UDR0;
 }
 
+void sendData(dataStruct* fData){
+  char* charData = (char*)&fData;
+  int i;
+  for (i=0;i<4;i++){
+    uart_putchar(charData[i]);
+    uart_putchar('\n');
+  }
+}
+
 FILE uart_output = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
 FILE uart_input = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
 FILE uart_io = FDEV_SETUP_STREAM(uart_putchar, uart_getchar, _FDEV_SETUP_RW);
 
+char fData
 
 /*int main(void)
 {

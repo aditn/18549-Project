@@ -5,6 +5,14 @@
 #include <avr/io.h>
 #include "I2C-master-lib-master/i2c_master.h"
 
+
+typedef struct{
+  uint8_t fSensor0;
+  uint8_t fSensor1;
+  uint8_t fSensor2;
+  uint8_t fSensor3;
+} dataStruct;
+
 void read_Accelerometer(float* accelArray){
 
 }
