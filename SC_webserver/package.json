@@ -1,0 +1,21 @@
+{
+  "name": "smrtchair",
+  "private": true,
+  "version": "1.0.0",
+  "description": "The smart chair web backend simplified",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Bz",
+  "devDependencies": {
+    "express": "^4.13.3"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.0",
+    "fs": "0.0.2",
+    "mysql": "^2.13.0"
+  }
+}

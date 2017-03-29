@@ -1,0 +1,26 @@
+{
+    "user1": {
+        "name": "bensonz",
+        "password": "123",
+        "profession": "Genji",
+        "id": 1
+    },
+    "user2": {
+        "name": "tonyjin",
+        "password": "123",
+        "profession": "Solider76",
+        "id": 2
+    },
+    "user3": {
+        "name": "Adit",
+        "password": "123",
+        "profession": "McCree",
+        "id": 3
+    },
+    "user4": {
+        "name": "Nikil",
+        "password": "123",
+        "profession": "Widowmaker",
+        "id": 4
+    }
+}
