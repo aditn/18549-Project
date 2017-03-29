@@ -12,11 +12,17 @@ var mysql = require('mysql');
  *  https://github.com/mysqljs/mysql
  */
 var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'dev',
-  password : 'wearethebest',
-  database : 'my_db'
+  host     : 'pstr-mysql-east.cypjbwgldgpk.us-east-2.rds.amazonaws.com',
+  port     : '3306
+  user     : 'pstr',
+  password : 'smartchair15',
+  database : 'test_sensor'
 });
+
+connection.connect(function(err) {
+    if (err) throw err;
+    console.log('You are now connected...');
+})
 
 // for filereader
 var fs = require("fs");
@@ -47,6 +53,23 @@ app.get('/',function(req,res){
 // sample post request, does not do anything yet
 app.post('/', function(req, res) {
     console.log(req.body);
+    var sensor1 = req.body.sensor1;
+    var sensor2 = req.body.sensor2;
+    var sensor3 = req.body.sensor3;
+    var sensor4 = req.body.sensor4;
+    var text = req.body.text;
+    connection.query('INSERT INTO sensor_data (sensor1, sensor2, sensor3, sensor4, text) VALUES (?, ?, ?, ?, ?)', [sensor1, sensor2, sensor3, sensor4, text], function(err, result) {
+        if (err) throw err;
+        connection.query('SELECT * FROM sensor_data', function(err, results) {
+            if (err) throw err;
+            for(i = 0; i < results.length; i++) {
+                console.log(results[i].id);
+                console.log(results[i].sensor1);
+                console.log(results[i].sensor2);
+                console.log(results[i].sensor3);
+                console.log(results[i].sensor4);
+                console.log(results[i].text);
+            })
     res.end('Received a post request');
 });
 

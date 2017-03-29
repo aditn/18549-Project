@@ -9,7 +9,7 @@ data['sensor1'] = 1.1
 data['sensor2'] = 2.2
 data['sensor3'] = 3.3
 data['sensor4'] = 4.4
-data['timestamp'] = "time"
+data['text'] = "time"
 json_data = json.dumps(data)
 print json_data
               
