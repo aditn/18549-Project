@@ -1,3 +1,5 @@
+// Use math.random to generate random numbers for demo
+import math;
 // Set up
 var express = require('express');
 var app = express();
@@ -13,7 +15,7 @@ var mysql = require('mysql');
  */
 var connection = mysql.createConnection({
   host     : 'pstr-mysql-east.cypjbwgldgpk.us-east-2.rds.amazonaws.com',
-  port     : '3306
+  port     : '3306',
   user     : 'pstr',
   password : 'smartchair15',
   database : 'test_sensor'
@@ -23,6 +25,25 @@ connection.connect(function(err) {
     if (err) throw err;
     console.log('You are now connected...');
 })
+// Got this from stackoverflow:
+// http://stackoverflow.com/questions/1527803/generating-random-whole-numbers-in-javascript-in-a-specific-range
+/**
+ * Returns a random number between min (inclusive) and max (exclusive)
+ */
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive)
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+// Define the min and max of our simulated data
+const simulat_data_min = 0;
+const simulat_data_max = 100;
 
 // for filereader
 var fs = require("fs");
