@@ -2,77 +2,14 @@
   main.c
 */
 
-#include "serial.h"
-#include "sensor.c"
-//#include "I2C-master-lib-master/i2c_master.c"
-#include "uart_test.c"
-#include <avr/io.h>
+//#include "serial.h"
+#include "sensor.h"
+#include "uart_test.h"
+#include "I2C-master-lib-master/i2c_master.c"
 #include <util/twi.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 
-#define MPU6050 0x53
-#define DEVREAD 0xA7
-
-/*int main(void){
-  
-  serial_init();
-  //sensor_init();
-  
-  uint8_t char_counter = 0;
-  uint8_t c;
-
-  while((c = serial_read()) != SERIAL_NO_DATA){
-    if(c == 'p'){
-      // Probe Pulse Sensor
-      sensor_probe(); //add macros for each sensor
-      char_counter = 0;
-    }
-    else{
-      line[char_counter++] = c;
-    }     
-  }
-}*/
-
-
-
-uint16_t adc_read(uint8_t adcx);
-
-uint16_t adc_read(uint8_t adcx) {
-  /* adcx is the analog pin we want to use.  ADMUX's first few bits are
-   * the binary representations of the numbers of the pins so we can
-   * just 'OR' the pin's number with ADMUX to select that pin.
-   * We first zero the four bits by setting ADMUX equal to its higher
-   * four bits. */
-  ADMUX &=  0xf0;
-  ADMUX |=  adcx;
-
-  /* This starts the conversion. */
-  ADCSRA |= _BV(ADSC);
-
-  /* This is an idle loop that just wait around until the conversion
-   * is finished.  It constantly checks ADCSRA's ADSC bit, which we just
-   * set above, to see if it is still set.  This bit is automatically
-   * reset (zeroed) when the conversion is ready so if we do this in
-   * a loop the loop will just go until the conversion is ready. */
-  while ( ADCSRA & _BV(ADIF) );
-
-  uint16_t adcV = ADC;
-  ADCSRA |= _BV(ADIF);
-
-  /* Finally, we return the converted value to the calling function. */
-  return adcV;
-}
-
-
-void collectforceData(dataStruct* data){
-  // use ADC here later
-
-  // using fake data for now
-  dataStruct.fSensor0 = 10;
-  dataStruct.fSensor1 = 20;
-  dataStruct.fSensor2 = 30;
-  dataStruct.fSensor3 = 40;
-}
 
 int main(void)
 {
@@ -80,8 +17,6 @@ int main(void)
    uart_init();
    stdout = &uart_output;
    stdin  = &uart_input;
-
-   //uint8_t accelData[3];
 
    char input;
    //float accel_Values[3]; 
@@ -120,15 +55,10 @@ int main(void)
 
   /* Set the LED pin as an output. */
   //DDRB  |= _BV(LED_PIN);
-  uint8_t i = 0;
   uint8_t pd = 0;
   uint8_t pd2 = 0;
   uint8_t waitUntilRed = 0;
   uint8_t waitUntilGreen = 0;
-  
-  // Force Sensor Data struct
-  dataStruct fData;
-  
   
   /* continually check if the ADC value is greater than the
    * defined ADC_THRESHOLD value above.  If it is turn the LED on,
@@ -180,8 +110,8 @@ int main(void)
       }
       else if(input == 'f'){ //get force sensor data + send to RPi
         // use ADC here but for now send fake data
-        collectforceData(&fData);
-        sendData(&fData);
+        collectforceData(fData);
+        sendData(fData);
 
       }
       PORTB ^= 0x01;            
