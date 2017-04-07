@@ -12739,16 +12739,6 @@ shorted to VCC.</text>
 <pinref part="R15" gate="G$1" pin="2"/>
 </segment>
 </net>
-<net name="N$13" class="0">
-<segment>
-<pinref part="U8" gate="U1" pin="VBG"/>
-<wire x1="162.56" y1="111.76" x2="154.94" y2="111.76" width="0.1524" layer="91"/>
-<wire x1="154.94" y1="111.76" x2="154.94" y2="106.872121875" width="0.1524" layer="91"/>
-<pinref part="C21" gate="G$1" pin="2"/>
-<wire x1="152.51485625" y1="106.872121875" x2="154.94" y2="106.872121875" width="0.1524" layer="91"/>
-<wire x1="154.94" y1="106.872121875" x2="154.94" y2="106.68" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$16" class="0">
 <segment>
 <pinref part="Q2" gate="G$1" pin="C"/>
@@ -12857,24 +12847,25 @@ shorted to VCC.</text>
 <net name="AVDD1" class="0">
 <segment>
 <label x="119.38" y="17.78" size="1.778" layer="95"/>
-<pinref part="L2" gate="G$1" pin="1"/>
-<wire x1="147.32" y1="17.78" x2="154.94" y2="17.78" width="0.2032" layer="91"/>
 <pinref part="JP3" gate="G$1" pin="3"/>
 <wire x1="88.9" y1="-76.2" x2="88.9" y2="-71.12" width="0.1524" layer="91"/>
 <pinref part="JP4" gate="G$1" pin="3"/>
 <wire x1="111.76" y1="-76.2" x2="111.76" y2="-71.12" width="0.1524" layer="91"/>
 <wire x1="111.76" y1="-71.12" x2="88.9" y2="-71.12" width="0.1524" layer="91"/>
 <junction x="88.9" y="-71.12"/>
-<wire x1="147.32" y1="17.78" x2="137.352121875" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="137.16" y1="17.78" x2="88.9" y2="17.78" width="0.1524" layer="91"/>
 <wire x1="88.9" y1="17.78" x2="88.9" y2="-71.12" width="0.1524" layer="91"/>
+<pinref part="L2" gate="G$1" pin="1"/>
+<wire x1="147.32" y1="17.78" x2="154.94" y2="17.78" width="0.2032" layer="91"/>
 <pinref part="C27" gate="G$1" pin="1"/>
 <wire x1="147.512121875" y1="15.12514375" x2="147.32" y2="15.12514375" width="0.1524" layer="91"/>
 <wire x1="147.32" y1="15.12514375" x2="147.32" y2="17.78" width="0.1524" layer="91"/>
-<junction x="147.32" y="17.78"/>
 <pinref part="C26" gate="G$1" pin="1"/>
-<wire x1="137.16" y1="17.78" x2="137.352121875" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="137.352121875" y1="17.78" x2="137.352121875" y2="15.12514375" width="0.1524" layer="91"/>
+<wire x1="137.352121875" y1="15.12514375" x2="137.16" y2="15.12514375" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="15.12514375" x2="137.16" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="17.78" x2="147.32" y2="17.78" width="0.1524" layer="91"/>
+<junction x="147.32" y="17.78"/>
+<wire x1="137.16" y1="17.78" x2="88.9" y2="17.78" width="0.1524" layer="91"/>
+<junction x="137.16" y="17.78"/>
 </segment>
 </net>
 <net name="PC1" class="0">
@@ -12902,16 +12893,6 @@ shorted to VCC.</text>
 <junction x="175.26" y="2.54"/>
 <pinref part="R19" gate="G$1" pin="1"/>
 <pinref part="R20" gate="G$1" pin="2"/>
-</segment>
-</net>
-<net name="N$24" class="0">
-<segment>
-<pinref part="U2" gate="U1" pin="VBG"/>
-<wire x1="200.66" y1="-7.62" x2="193.04" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="193.04" y1="-7.62" x2="193.04" y2="-12.507878125" width="0.1524" layer="91"/>
-<pinref part="C29" gate="G$1" pin="2"/>
-<wire x1="190.61485625" y1="-12.507878125" x2="193.04" y2="-12.507878125" width="0.1524" layer="91"/>
-<wire x1="193.04" y1="-12.507878125" x2="193.04" y2="-12.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$25" class="0">
@@ -12972,23 +12953,25 @@ shorted to VCC.</text>
 <net name="AVDD0" class="0">
 <segment>
 <label x="81.28" y="137.16" size="1.778" layer="95"/>
-<pinref part="L1" gate="G$1" pin="1"/>
-<wire x1="109.22" y1="137.16" x2="116.84" y2="137.16" width="0.2032" layer="91"/>
 <pinref part="JP5" gate="G$1" pin="3"/>
-<wire x1="109.22" y1="137.16" x2="99.252121875" y2="137.16" width="0.1524" layer="91"/>
-<wire x1="99.252121875" y1="137.16" x2="50.8" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="137.16" x2="50.8" y2="48.26" width="0.1524" layer="91"/>
 <pinref part="JP6" gate="G$1" pin="3"/>
 <wire x1="50.8" y1="48.26" x2="50.8" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="43.18" x2="73.66" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="48.26" x2="50.8" y2="48.26" width="0.1524" layer="91"/>
 <junction x="50.8" y="48.26"/>
-<pinref part="C19" gate="G$1" pin="1"/>
-<wire x1="99.252121875" y1="137.16" x2="99.252121875" y2="134.50514375" width="0.1524" layer="91"/>
+<pinref part="L1" gate="G$1" pin="1"/>
 <pinref part="C20" gate="G$1" pin="1"/>
-<wire x1="109.22" y1="137.16" x2="109.412121875" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="109.412121875" y1="137.16" x2="109.412121875" y2="134.50514375" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="137.16" x2="109.412121875" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="137.16" x2="116.84" y2="137.16" width="0.2032" layer="91"/>
+<wire x1="50.8" y1="137.16" x2="99.06" y2="137.16" width="0.1524" layer="91"/>
 <junction x="109.22" y="137.16"/>
+<pinref part="C19" gate="G$1" pin="1"/>
+<wire x1="99.06" y1="137.16" x2="109.22" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="99.252121875" y1="134.50514375" x2="99.06" y2="134.50514375" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="134.50514375" x2="99.06" y2="137.16" width="0.1524" layer="91"/>
+<junction x="99.06" y="137.16"/>
 </segment>
 </net>
 <net name="A-1" class="0">
@@ -13041,6 +13024,22 @@ shorted to VCC.</text>
 <label x="81.28" y="111.76" size="1.778" layer="95"/>
 </segment>
 </net>
+<net name="N$13" class="0">
+<segment>
+<pinref part="U8" gate="U1" pin="VBG"/>
+<pinref part="C21" gate="G$1" pin="2"/>
+<wire x1="162.56" y1="111.76" x2="152.51485625" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="152.51485625" y1="111.76" x2="152.51485625" y2="106.872121875" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$24" class="0">
+<segment>
+<pinref part="U2" gate="U1" pin="VBG"/>
+<pinref part="C29" gate="G$1" pin="2"/>
+<wire x1="200.66" y1="-7.62" x2="190.61485625" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="190.61485625" y1="-7.62" x2="190.61485625" y2="-12.507878125" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
@@ -13051,6 +13050,25 @@ shorted to VCC.</text>
 <approved hash="208,1,33.02,40.64,VCC,sup,,,,"/>
 <approved hash="208,1,205.74,63.5,VCC,out,,,,"/>
 <approved hash="208,1,210.82,63.5,VCC,sup,,,,"/>
+<approved hash="208,2,160.02,139.7,VCC,sup,,,,"/>
+<approved hash="208,2,142.24,152.4,VCC,sup,,,,"/>
+<approved hash="208,2,203.2,154.94,VCC,sup,,,,"/>
+<approved hash="208,2,198.12,20.32,VCC,sup,,,,"/>
+<approved hash="208,2,180.34,33.02,VCC,sup,,,,"/>
+<approved hash="208,2,241.3,35.56,VCC,sup,,,,"/>
+<approved hash="208,2,152.4,45.72,VCC,sup,,,,"/>
+<approved hash="208,2,167.64,45.72,VCC,sup,,,,"/>
+<approved hash="208,2,139.7,45.72,VCC,sup,,,,"/>
+<approved hash="208,2,193.04,139.7,VCC,sup,,,,"/>
+<approved hash="208,2,231.14,20.32,VCC,sup,,,,"/>
+<approved hash="113,1,124.782,57.15,LED1,,,,,"/>
+<approved hash="113,1,137.482,57.15,LED2,,,,,"/>
+<approved hash="113,1,150.537,88.7053,SL1,,,,,"/>
+<approved hash="113,1,178.477,116.645,SL2,,,,,"/>
+<approved hash="113,1,35.56,90.1488,CLK,,,,,"/>
+<approved hash="113,1,61.5527,33.0877,J1,,,,,"/>
+<approved hash="113,2,72.9827,114.495,JP2,,,,,"/>
+<approved hash="113,2,111.083,-4.88527,JP1,,,,,"/>
 </errors>
 </schematic>
 </drawing>
