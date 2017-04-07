@@ -1,0 +1,25 @@
+This is a simple text file to illustrate my idea of our user website.
+
+The basic design for our user website includes two parts:
+1. user
+2. admin
+
+Both parts will require login (identification).
+Thus both parts will be able to:
+    a. set their passwords/username
+
+For 1. user, they can
+    b. view their activities in a non-interactive way
+    c. set the sensors to learning mode
+
+For 2. admin, they can
+    d. view all "chairs" activities
+        d.1. A chair is simply defined by a set of sensors
+        d.2. If in the case that any sensors are broken,
+             it is still viewed as a chair, simply not complete.
+             In this case, there will be demonstration of which sensor is not
+             sending data.
+    e. toggle monitoring mode
+        e.1. monitoring mode is a mode at which admin can leave the website,
+             and any 'illegal' activities will be reported to a preset mail
+             address.

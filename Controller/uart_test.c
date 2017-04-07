@@ -1,14 +1,14 @@
+/* 
+ uart.c
+*/
 
-/* some includes */
+#include "uart_test.h"
 #include <inttypes.h>
-#include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 #include <util/delay.h>
-#include <stdio.h>
-
-#define BAUD 115200
+#include <stdlib.h>
 #include <util/setbaud.h>
 
 void uart_init(void) {
@@ -33,6 +33,37 @@ void uart_putchar(char c) {
 char uart_getchar(void) {
    loop_until_bit_is_set(UCSR0A, RXC0); /* Wait until data exists. */
    return UDR0;
+}
+
+// This function will convert the uint16_t ADC data into
+// characters and then send each char over serial
+// TODO: MAKE THE SWITCH TO I2C ONCE THE I/O EXPANSION BOARD COMES
+void sendData(uint16_t* fData){
+  //uint8_t* intData = (uint8_t*)&fData;
+  //char* charData = (char*)&fData;
+  //printf("%d\n", fData->fSensor0);
+  //printf("%d\n", fData->fSensor1)
+  
+  uint8_t buffersize=4;
+  char buffer[buffersize];
+  int digits = 1;
+  uint8_t num_temp=0;
+  uint8_t j = 0;
+
+  for (j=0;j<NUMBER_OF_SENSORS;j++){
+    itoa((int)fData[j],buffer,10);
+    num_temp=fData[j];
+    //get number of digits
+    while (num_temp!=0){
+      num_temp/=10;
+      digits++;
+    }
+    //send appropriate number of characters
+    for (digits-=1;digits>=0;digits--){
+      uart_putchar(buffer[buffersize-digits]);
+    }
+    uart_putchar('\n');
+  }
 }
 
 FILE uart_output = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
