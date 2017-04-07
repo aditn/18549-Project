@@ -49,10 +49,12 @@ void sendData(uint16_t* fData){
   int digits = 1;
   uint8_t num_temp=0;
   uint8_t j = 0;
-
+  
+  //printf("sendData fn\n");
   for (j=0;j<NUMBER_OF_SENSORS;j++){
-    itoa((int)fData[j],buffer,10);
-    num_temp=fData[j];
+    //itoa((int)fData[j],buffer,10);
+    printf("%d\r\n",fData[j]);
+    /*num_temp=fData[j];
     //get number of digits
     while (num_temp!=0){
       num_temp/=10;
@@ -62,7 +64,7 @@ void sendData(uint16_t* fData){
     for (digits-=1;digits>=0;digits--){
       uart_putchar(buffer[buffersize-digits]);
     }
-    uart_putchar('\n');
+    uart_putchar('\n');*/
   }
 }
 
