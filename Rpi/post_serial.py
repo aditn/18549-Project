@@ -32,6 +32,9 @@ while True:
     for i in b:
         data[i[0]] = float(i[1])
     print(data) #make post request here
+    json_data = json.dumps(data)
+    headers = {'content-type': 'application/json'}
+    r = requests.post(url=URL, data=json_data, headers=headers)
     sleep(5)
 
     '''
