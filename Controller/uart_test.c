@@ -43,7 +43,8 @@ void sendData(uint32_t* fData){
   uint8_t j = 0;
   
   for (j=0;j<NUMBER_OF_SENSORS;j++){
-    printf("sensor%d: %lu",j,fData[j]);
+    printf("sensor%d:%lu",j,fData[j]);
+    if (j<NUMBER_OF_SENSORS-1) printf(",");
     if (j==NUMBER_OF_SENSORS-1) printf("\n");
   }
 }
