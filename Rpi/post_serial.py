@@ -21,7 +21,7 @@ data = {}
 a = []
 b = []
 while True:
-    port.write("f") # f is used to collect force sensor data
+    ser.write("f") # f is used to collect force sensor data
     #data_name = 'sensor' + str(content_count)
     read_serial_str = ser.readline()
     a = read_serial_str.split(",")
