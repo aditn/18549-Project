@@ -26,6 +26,7 @@ while True:
     ser.write("f") # f is used to collect force sensor data
     #data_name = 'sensor' + str(content_count)
     read_serial_str = ser.readline()
+    print(read_serial_str)
     a = read_serial_str.split(",")
     for i in a:
         b.append(i.split(":"))
