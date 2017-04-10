@@ -11,15 +11,28 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pin, GPIO.BCM)
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+ser = serial.Serial('/dev/ttyACM0', 115200, 3.0)
 s = [0]
 content_count = 0
   
 URL = "http://localhost:3000/"
       
 data = {}
-
+a = []
+b = []
 while True:
+    port.write("f") # f is used to collect force sensor data
+    #data_name = 'sensor' + str(content_count)
+    read_serial_str = ser.readline()
+    a = read_serial_str.split(",")
+    for i in a:
+        b.append(i.split(":"))
+    for i in b:
+        data[i[0]] = float(i[1])
+    print(data) #make post request here
+    sleep(5)
+
+    '''
     if content_count < 4:
         content_count += 1;
         data_name = 'sensor' + str(content_count)
@@ -40,4 +53,5 @@ while True:
         r = requests.post(url=URL, data=json_data, headers=headers)
         print r.text
         sleep(.5)
-        GPIO.output(pin, GPIO.LOW)
+        GPIO.output(pin, GPIO.LOW)'''
+
