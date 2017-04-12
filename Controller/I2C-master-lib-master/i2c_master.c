@@ -13,11 +13,13 @@
 
 void i2c_init(void)
 {
+	printf("init...\n");
 	TWBR = (uint8_t)TWBR_val;
 }
 
 uint8_t i2c_start(uint8_t address)
 {
+	printf("In I2c start\r\n");
 	// reset TWI control register
 	TWCR = 0;
 	// transmit START condition 
