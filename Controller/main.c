@@ -8,14 +8,20 @@
  //#include <avr/io.h>
 #include <util/delay.h>
  #include "uart_test.h"
- #include "I2C-master-lib-master/i2c_master.h"
- #include "i2c.c"
+ #include "i2c_master.h"
+ //#include "i2c.c"
  #include <stdio.h>
 #include <string.h>
  
+ #define SLAVE_ADDRESS 0x04
+
+
+
  #define BLINK_DELAY_MS 100
 // #include <util/delay.h>
 // #include <avr/interrupt.h>
+
+uint8_t number = 0;
 
 int i =0;
 

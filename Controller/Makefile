@@ -19,7 +19,7 @@
 # program name should not be changed...
 PROGRAM    = main
 
-PRGM_PORT=/dev/ttyACM0
+PRGM_PORT=/dev/ttyUSB0
 
 # enter the parameters for the avrdude isp tool
 
@@ -52,7 +52,7 @@ STK500-1 = $(STK500) -e -d$(MCU_TARGET) -pf -vf -if$(PROGRAM)_$(TARGET).hex \
 STK500-2 = $(STK500) -d$(MCU_TARGET) -ms -q -lCF -LCF -cUSB -I200kHz -s -wt
 
 
-OBJ        = $(PROGRAM).o sensor.o uart_test.o I2C-master-lib-master/i2c-master.o
+OBJ        = $(PROGRAM).o sensor.o uart_test.o i2c-master.o
 OPTIMIZE   = -O2
 
 DEFS       = 
