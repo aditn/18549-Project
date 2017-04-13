@@ -38,31 +38,14 @@ char uart_getchar(void) {
 // This function will convert the uint16_t ADC data into
 // characters and then send each char over serial
 // TODO: MAKE THE SWITCH TO I2C ONCE THE I/O EXPANSION BOARD COMES
-void sendData(uint16_t* fData){
-  //uint8_t* intData = (uint8_t*)&fData;
-  //char* charData = (char*)&fData;
-  //printf("%d\n", fData->fSensor0);
-  //printf("%d\n", fData->fSensor1)
+void sendData(uint32_t* fData){
   
-  uint8_t buffersize=4;
-  char buffer[buffersize];
-  int digits = 1;
-  uint8_t num_temp=0;
   uint8_t j = 0;
-
+  
   for (j=0;j<NUMBER_OF_SENSORS;j++){
-    itoa((int)fData[j],buffer,10);
-    num_temp=fData[j];
-    //get number of digits
-    while (num_temp!=0){
-      num_temp/=10;
-      digits++;
-    }
-    //send appropriate number of characters
-    for (digits-=1;digits>=0;digits--){
-      uart_putchar(buffer[buffersize-digits]);
-    }
-    uart_putchar('\n');
+    printf("sensor%d:%lu",j,fData[j]);
+    if (j<NUMBER_OF_SENSORS-1) printf(",");
+    if (j==NUMBER_OF_SENSORS-1) printf("\n");
   }
 }
 
