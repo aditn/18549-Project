@@ -5,7 +5,7 @@
 //#include "serial.h"
 #include "sensor.h"
 #include "uart_test.h"
-#include "I2C-master-lib-master/i2c_master.c"
+#include "i2c_master.h"
 #include <util/twi.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -17,9 +17,11 @@ int main(void)
    uart_init();
    stdout = &uart_output;
    stdin  = &uart_input;
+  
+   // Setup i2c
+   i2c_init();
 
    char input;
-   //float accel_Values[3]; 
 
    // Setup ports
    DDRB |= (1<<1) | (1<<0);
@@ -36,22 +38,6 @@ int main(void)
    printf("accelData[0]:%d\n", accelData[0]);
    */
 
-   cli();
-   /* Enable the ADC */
-     // Set the ADC prescaler to 128 (i.e., 16MHz/128 = 125KHz)
-   ADCSRA |= ( 1 << ADPS2 ) | ( 1 << ADPS1 ) | ( 1 << ADPS0 );
-
-   // Set the voltage reference from AVcc (i.e., 5V).
-   ADMUX |= ( 1 << REFS0 );
-
-   // Turn on the ADC.
-   ADCSRA |= ( 1 << ADEN );
-
-   // Do the initial conversion (i.e., the slowest conversion)
-   // to ensure that everything is up and running.
-   ADCSRA |= ( 1 << ADSC );
-
-   sei();
 
   /* Set the LED pin as an output. */
   //DDRB  |= _BV(LED_PIN);

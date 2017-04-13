@@ -4,8 +4,8 @@
 
 void uart_init(void);
 void uart_putchar(char c);
-void sendData(uint16_t* fData);
-extern uint16_t fData[NUMBER_OF_SENSORS];
+void sendData(uint32_t* fData);
+extern uint32_t fData[NUMBER_OF_SENSORS];
 
 FILE uart_output;
 FILE uart_input;
