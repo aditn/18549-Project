@@ -1,9 +1,11 @@
 #include "defines.h"
 #include <avr/io.h>
 
-uint16_t fData[NUMBER_OF_SENSORS];
+uint32_t fData[NUMBER_OF_SENSORS];
+void adc_init();
 uint16_t adc_read(uint8_t adcx);
-void collectforceData(uint16_t* data);
+uint32_t ReadCount(); 
+void collectforceData(uint32_t* data);
 void read_Accelerometer(float* accelArray);
 void LED_green_on();
 void LED_green_off();
