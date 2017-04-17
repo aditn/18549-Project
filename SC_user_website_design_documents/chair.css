@@ -27,7 +27,7 @@ body, html, #main {
   /*-webkit-transform-origin: 50% 0 50%;
       -moz-transform-origin: 50% 0 50%;*/
   margin: 100px auto;
-  -webkit-transform: translateX(0) rotateY(1235deg);
+  -webkit-transform: translateX(0) rotateY(45deg);
       -moz-transform: translateX(0) rotateY(45deg);
   -webkit-transform-style: preserve-3d;
       -moz-transform-style: preserve-3d;
@@ -67,11 +67,11 @@ body, html, #main {
 
 
 .chair-seat {
-  -webkit-transform: rotateX(75deg) translate3d(0, -15px, 0);
-      -moz-transform: rotateX(75deg) translate3d(0, -15px, 0);
+  -webkit-transform: rotateX(75deg) translate3d(0, 0px, 0);
+      -moz-transform: rotateX(75deg) translate3d(0, 0px, 0);
   -webkit-transform-origin: 50% 90%;
       -moz-transform-origin: 50% 90%;
-  background-color: blue;
+  background-color: green;
   z-index: 5;
   z-index: 100;
 }

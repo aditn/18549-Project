@@ -1,0 +1,40 @@
+.title {
+    color: #02d9d2 !important;
+    text-align: center;
+}
+
+.content{
+    position: absolute;
+    right: 0;
+    top: 3em;
+    left: 0;
+    bottom: 3em;
+    background-color: #edebeb;
+    text-align: center;
+}
+
+.header {
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+    padding: 1em;
+    color: #ffffff;
+    background-color: #000000;
+    text-align: center;
+}
+
+.footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1em;
+    color: #ffffff;
+    background-color: #000000;
+    text-align: center;
+}
+
+.bar{
+
+}

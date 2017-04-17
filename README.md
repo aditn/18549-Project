@@ -1,4 +1,5 @@
 # SMRT CHAIR
+# PSTR - posture
 
 ### This is a CMU 18549 project done by Team 15 with the following Team members:
  -  Benson Zhang
