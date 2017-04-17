@@ -1,5 +1,3 @@
-// Use math.random to generate random numbers for demo
-import math;
 // Set up
 var express = require('express');
 var app = express();
@@ -21,10 +19,12 @@ var connection = mysql.createConnection({
   database : 'test_sensor'
 });
 
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log('You are now connected...');
-})
+// TODO: Fix this, It's throwing an error at my face
+// connection.connect(function(err) {
+//     if (err) throw err;
+//     console.log('You are now connected...');
+// });
+
 // Got this from stackoverflow:
 // http://stackoverflow.com/questions/1527803/generating-random-whole-numbers-in-javascript-in-a-specific-range
 /**
@@ -58,9 +58,20 @@ var port = 3000;
 app.get('/listUsers', function(req, res) {
     fs.readFile(__dirname + "/" + "data.json", 'utf8', function(err, data) {
         if(err){ console.log(err);}
-        res.end(data);
+        res.send(data);
         console.log('Send list of users');
     });
+});
+
+app.get('/sensor_data', function(req, res){
+    var sensor1 = getRandomInt(simulat_data_min,simulat_data_max);
+    var sensor2 = getRandomInt(simulat_data_min,simulat_data_max);
+    var data = {
+        'sensor1': sensor1,
+        'sensor2': sensor2
+    };
+    res.json(data);
+    console.log('sent fake sensor data');
 });
 
 // other general requests
@@ -79,18 +90,23 @@ app.post('/', function(req, res) {
     var sensor3 = req.body.sensor3;
     var sensor4 = req.body.sensor4;
     var text = req.body.text;
-    connection.query('INSERT INTO sensor_data (sensor1, sensor2, sensor3, sensor4, text) VALUES (?, ?, ?, ?, ?)', [sensor1, sensor2, sensor3, sensor4, text], function(err, result) {
+    connection.query('INSERT INTO sensor_data (sensor1, sensor2, sensor3, sensor4, text) VALUES (?, ?, ?, ?, ?)',
+    [sensor1, sensor2, sensor3, sensor4, text],
+    function(err, result) {
         if (err) throw err;
-        connection.query('SELECT * FROM sensor_data', function(err, results) {
-            if (err) throw err;
-            for(i = 0; i < results.length; i++) {
-                console.log(results[i].id);
-                console.log(results[i].sensor1);
-                console.log(results[i].sensor2);
-                console.log(results[i].sensor3);
-                console.log(results[i].sensor4);
-                console.log(results[i].text);
-            })
+        connection.query('SELECT * FROM sensor_data',
+            function(err, results) {
+                if (err) throw err;
+                for(i = 0; i < results.length; i++) {
+                    console.log(results[i].id);
+                    console.log(results[i].sensor1);
+                    console.log(results[i].sensor2);
+                    console.log(results[i].sensor3);
+                    console.log(results[i].sensor4);
+                    console.log(results[i].text);
+                }
+            });
+    });
     res.end('Received a post request');
 });
 
@@ -103,6 +119,6 @@ app.listen(port, 'localhost', function(err) {
         return;
     }
 
-    console.log("Listening at http://localhost:%s", port)
+    console.log("Listening at http://localhost:%s", port);
 
 });
