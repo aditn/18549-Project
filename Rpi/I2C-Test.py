@@ -20,18 +20,26 @@ def readNumber(mcu):
 
 
 while True:
+    msg = ""
     var = input("Enter 1 – 9: ")
     mcu = input("Enter 0, 1: ")
     
     if not var: continue
-    print "I have a number..."
+    #print "I have a number..."
     writeNumber(mcu, var)
     print "RPI: Hi Arduino, I sent you ", var
-    # sleep one second
     time.sleep(1)
+    num_bytes = readNumber(mcu)
+    time.sleep(.2)
+    for i in xrange(num_bytes):
+        writeNumber(mcu, i)
+        char = readNumber(mcu)
+        print "RPI: Received --> ", char
+        msg += chr(char)
+    #number = readNumber(mcu)
+    #print "Arduino: Hey RPI, I received a digit ", number
+    print "arduino: ", msg
 
-    number = readNumber(mcu)
-    print "Arduino: Hey RPI, I received a digit ", number
     print
 
 #     F#:1234,F#:1234,
