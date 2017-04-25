@@ -19,11 +19,10 @@ var connection = mysql.createConnection({
   database : 'test_sensor'
 });
 
-// TODO: Fix this, It's throwing an error at my face
-// connection.connect(function(err) {
-//     if (err) throw err;
-//     console.log('You are now connected...');
-// });
+connection.connect(function(err) {
+    if (err) throw err;
+    console.log('You are now connected...');
+});
 
 // Got this from stackoverflow:
 // http://stackoverflow.com/questions/1527803/generating-random-whole-numbers-in-javascript-in-a-specific-range
@@ -89,7 +88,7 @@ app.post('/', function(req, res) {
     var sensor2 = req.body.sensor2;
     var sensor3 = req.body.sensor3;
     var sensor4 = req.body.sensor4;
-    var text = req.body.text;
+    var text = "no text";
     connection.query('INSERT INTO sensor_data (sensor1, sensor2, sensor3, sensor4, text) VALUES (?, ?, ?, ?, ?)',
     [sensor1, sensor2, sensor3, sensor4, text],
     function(err, result) {
@@ -97,14 +96,9 @@ app.post('/', function(req, res) {
         connection.query('SELECT * FROM sensor_data',
             function(err, results) {
                 if (err) throw err;
-                for(i = 0; i < results.length; i++) {
-                    console.log(results[i].id);
-                    console.log(results[i].sensor1);
-                    console.log(results[i].sensor2);
-                    console.log(results[i].sensor3);
-                    console.log(results[i].sensor4);
-                    console.log(results[i].text);
-                }
+                var last = results.length - 1;
+                console.log("Received:");
+                console.log("ID:" + results[last].id + " S1:" + results[last].sensor1 + " S2:" + results[last].sensor2 + " S3:" + results[last].sensor3 + " S4:" + results[last].sensor4);
             });
     });
     res.end('Received a post request');
