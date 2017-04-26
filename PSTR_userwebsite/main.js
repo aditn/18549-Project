@@ -29,6 +29,8 @@ const chair = document.getElementById('chair');
 let WIDTH = chair.clientWidth;
 let HEIGHT = chair.clientHeight;
 let renderer, scene, camera, controls;
+let sensor_data = [];
+let sensor_points = [];
 let objects = [];
 
 function init(){
@@ -38,10 +40,7 @@ function init(){
     scene = new THREE.Scene();
     scene.fog = new THREE.Fog( 0x111111, 150, 200 );
 
-    //
-    let geometryCube = cube( 50 );
-    var object = new THREE.LineSegments( geometryCube, new THREE.LineDashedMaterial( { color: 0xffaa00, dashSize: 3, gapSize: 1, linewidth: 2 } ) );
-
+    //create the chair using line segments
     let geometryChair = chair_model(50);
     var object = new THREE.LineSegments( geometryChair, new THREE.LineDashedMaterial( { color: 0xffaa00, dashSize: 3, gapSize: 1, linewidth: 2 } ) );
 
@@ -67,6 +66,12 @@ function init(){
 function chair_model( size ){
     let h = size * 0.5;
     let geometry = new THREE.Geometry();
+    sensor_points.push((0,0,0));
+    sensor_points.push((0,h/2,-h/2));
+    sensor_points.push((0,0,-h/2));
+    sensor_points.push((0,0,-h));
+    sensor_points.push((h,0,0));
+    sensor_points.push((h,0,-h));
     geometry.vertices.push(
         // bkleft
         new THREE.Vector3( 0, 0, 0 ),
@@ -152,9 +157,47 @@ function animate(){
 	render();
 }
 
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive)
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const d_min = 0;
+const d_max = 100;
+let count = 0;
 function render(){
     // get new sensor data here
-
+    // 6 random data
+    if( count <= 333){
+        count ++;
+        renderer.render(scene, camera);
+        return;
+    }
+    count = 0;
+    sensor_data.push(getRandomInt(d_min,d_max));
+    sensor_data.push(getRandomInt(d_min,d_max));
+    sensor_data.push(getRandomInt(d_min,d_max));
+    sensor_data.push(getRandomInt(d_min,d_max));
+    sensor_data.push(getRandomInt(d_min,d_max));
+    sensor_data.push(getRandomInt(d_min,d_max));
+    let geometry = new THREE.SphereGeometry(1);
+    let material;
+    for (let i = 0; i < sensor_data.length;i ++){
+        if(sensor_data[i] <= 33){
+            material = new THREE.MeshBasicMaterial( { color: 0xbe4545 } );
+        }else if (sensor_data[i] <= 66){
+            material = new THREE.MeshBasicMaterial( { color: 0x3e9cd7 } );
+        }else{
+            material = new THREE.MeshBasicMaterial( { color: 0x6bf731 } );
+        }
+        sphereInter = new THREE.Mesh( geometry, material );
+		sphereInter.visible = true;
+        sphereInter.position.copy(new THREE.Vector3(sensor_points[i]));
+		scene.add( sphereInter );
+    }
     renderer.render(scene, camera);
 }
 
