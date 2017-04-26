@@ -9,10 +9,13 @@
 #include <util/twi.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <string.h>
 
 #define SLAVE_ADDRESS 0x04
 
 volatile uint8_t data;
+//volatile char* data_string;
+char* data_string = "Hello World!";
 
 void I2C_received(uint8_t received_data) {
   data = received_data;
@@ -20,8 +23,16 @@ void I2C_received(uint8_t received_data) {
 }
 
 void I2C_requested() {
-  printf("Arduino sending back: %d\r\n", data);
-  I2C_transmitByte(data);
+  //printf("Arduino sending back: %d\r\n", data);
+  //I2C_transmitByte(data);
+  if (data == 255) {
+    I2C_transmitByte(strlen(data_string));
+  }
+  
+  else {
+    printf("\t\t\tArduino sending back: %c\r\n", data_string[data]);
+    I2C_transmitByte(data_string[data]);
+  }
 }
 
 int main(void)
