@@ -14,8 +14,14 @@
 #define SLAVE_ADDRESS 0x04
 
 volatile uint8_t data;
-//volatile char* data_string;
-char* data_string = "Hello World!";
+
+/* This is going to be a volatile modifitable-by-sprintf data string */
+char* data_string = "Hello World!"; 
+
+void read_force_sensors() {
+    // Read force sensors and sprintf data into data_string
+    // format "F#:1234,F#:1626"
+}
 
 void I2C_received(uint8_t received_data) {
   data = received_data;
@@ -23,9 +29,11 @@ void I2C_received(uint8_t received_data) {
 }
 
 void I2C_requested() {
-  //printf("Arduino sending back: %d\r\n", data);
-  //I2C_transmitByte(data);
+  // 255 is currently the signal to send and collect data
   if (data == 255) {
+    // Collect data from attached sensors
+    read_force_sensors();
+
     I2C_transmitByte(strlen(data_string));
   }
   
