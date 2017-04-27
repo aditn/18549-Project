@@ -2,13 +2,14 @@ import requests
 import json
 import datetime
   
-URL = "http://localhost:3000/"
-      
+#URL = "http://pstr-env.us-east-2.elasticbeanstalk.com:3000"
+URL = "http://localhost:3000"
+
 data = {}
-data['sensor1'] = 1.1
-data['sensor2'] = 2.2
-data['sensor3'] = 3.3
-data['sensor4'] = 4.4
+data['sensor1'] = 12
+data['sensor2'] = 24
+data['sensor3'] = 31
+data['sensor4'] = 44
 data['text'] = "time"
 json_data = json.dumps(data)
 print json_data
