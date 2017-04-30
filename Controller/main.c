@@ -21,22 +21,10 @@ int main(void)
    stdin  = &uart_input;
    char input;
 
-   DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
-   DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
    // Setup ports
    DDRB |= (1<<1) | (1<<0);
    PORTB |= (1<<0);
    PORTB &= ~(1<<1);
-   for (;;) {
-     input = getchar();
-     if(input == 'f'){
-       printf("collect\n\r");
-       collectforceData(fData);   
-       printf("send\n\r");
-       sendData(fData);
-     }
-   }
-
    I2C_setCallbacks(I2C_received, I2C_requested);
 
    I2C_init(SLAVE_ADDRESS);

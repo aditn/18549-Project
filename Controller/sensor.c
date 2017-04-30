@@ -77,12 +77,11 @@ uint32_t ReadCount(void){
 
 void collectforceData(uint32_t* data){
   // set Data and Manual CLK pins
-  //DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
-  //DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
+  DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
+  DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
    
   // using fake data for now
   data[0] = ReadCount();
-  printf("got through read count\n\r");
   //data[0] = (uint32_t)10;
   data[1] = (uint32_t)20;
   //data[2] = (uint32_t)30;
