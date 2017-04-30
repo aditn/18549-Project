@@ -8,7 +8,8 @@ import datetime
 # for RPI version 1, use “bus = smbus.SMBus(0)”
 bus = smbus.SMBus(1)
 
-URL = "" #put the URL here
+URL = "http://pstr-env.us-east-2.elasticbeanstalk.com:80"
+#put the URL here\
 
 addresses = [0x04, 0x08] #08 IS ARDUINO
 
@@ -23,9 +24,13 @@ def readNumber(mcu):
 
 while True:
     msg = ""
-    
-    var = input("Enter number (255 to begin data collection): ")
-    mcu = input("Enter 0, 1: ")
+    a=[]
+    b=[]
+    data={}
+    #var = input("Enter number (255 to begin data collection): ")
+    #mcu = input("Enter 0, 1: ")
+    var = 255
+    mcu = 0
     
     if not var: continue
     #print "I have a number..."
@@ -47,6 +52,7 @@ while True:
 
     ##### Json parsing to post w/ real data #####
     a = msg.split(",")
+    a.pop()
     for i in a:
         b.append(i.split(":"))
     for i in b:
@@ -62,4 +68,5 @@ while True:
 
     print
 
-#     F#:1234,F#:1234,
+    time.sleep(2)
+
