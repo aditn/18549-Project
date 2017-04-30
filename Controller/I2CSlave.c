@@ -1,5 +1,6 @@
 #include <util/twi.h>
 #include <avr/interrupt.h>
+#include <stdio.h>
 
 #include "I2CSlave.h"
 

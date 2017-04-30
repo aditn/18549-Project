@@ -4,7 +4,7 @@
 
 #include "sensor.h"
 #include <avr/interrupt.h>
-//#include "I2C-master-lib-master/i2c_master.h"
+#include <stdio.h>
 
 uint16_t adc_read(uint8_t adcx) {
   /* adcx is the analog pin we want to use.  ADMUX's first few bits are
@@ -61,7 +61,7 @@ uint32_t ReadCount(void){
   //PC1 is data
   PORTC |= (1<<PC1); // set PC1 as input
   Count=0;
-  while(PINC & (1<<PC1));
+  while(PINC & (1<<PC1)); 
   for (i=0;i<24;i++){
     PORTC |= (1<<PC0);
     Count=Count<<1;
@@ -74,21 +74,19 @@ uint32_t ReadCount(void){
   PORTC &= ~(1<<PC0);
   return(Count);
 } 
+
 void collectforceData(uint32_t* data){
   // set Data and Manual CLK pins
-  DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
-  DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
-  
+  //DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
+  //DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
+   
   // using fake data for now
   data[0] = ReadCount();
+  printf("got through read count\n\r");
   //data[0] = (uint32_t)10;
   data[1] = (uint32_t)20;
-  data[2] = (uint32_t)30;
-  data[3] = (uint32_t)40;
-}
-
-void read_Accelerometer(float* accelArray){
-
+  //data[2] = (uint32_t)30;
+  //data[3] = (uint32_t)40;
 }
 
 
