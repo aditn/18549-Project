@@ -21,7 +21,7 @@ var connection = mysql.createConnection({
 });
 
 connection.connect(function(err) {
-    if (err) throw err;
+    if (err) console.log('Database connection error.');
     console.log('You are now connected...');
 });
 
@@ -53,20 +53,22 @@ router.get('/sensor_data', function(req, res){
 });
 
 router.get('/data', function(req, res){
-    console.log(req.query.number);
-
     var num = req.query.number;
+    if (isNaN(num) || parseInt(num) < 1) {
+        console.log('here');
+        num = null;;
+    }
     console.log(num)
     if (typeof num === 'undefined' || num === null) {
         connection.query('SELECT * FROM sensor_data', function(err, results) {
-            if (err) throw err;
+            if (err) res.end('GET request database query error.');
             var json_text = JSON.stringify(results);
             var data = JSON.parse(json_text);
             res.json(data);
         });
     } else {
         connection.query('SELECT * FROM (SELECT * FROM sensor_data ORDER BY id DESC LIMIT ' + num + ') sub ORDER BY id ASC', function(err, results) {
-            if (err) throw err;
+            if (err) res.end('GET request database query error.');
             var json_text = JSON.stringify(results);
             var data = JSON.parse(json_text);
             res.json(data);
@@ -93,14 +95,14 @@ router.post('/', function(req, res) {
     var sensor4 = req.body.sensor4;
     var text = req.body.text;
     connection.query('INSERT INTO sensor_data (sensor1, sensor2, sensor3, sensor4, text) VALUES (?, ?, ?, ?, ?)', [sensor1, sensor2, sensor3, sensor4, text], function(err, result) {
-        if (err) throw err;
-        });
-        var data = {'sensor1':sensor1,
-                    'sensor2':sensor2,
-                    'sensor3':sensor3,
-                    'sensor4':sensor4,
-                    'text':'text'};
-        res.end('Received a post request');
+        if (err) res.end('POST request database query error.');
+    });
+    var data = {'sensor1':sensor1,
+                'sensor2':sensor2,
+                'sensor3':sensor3,
+                'sensor4':sensor4,
+                'text':'text'};
+    res.end('Received a post request');
 });
 
 module.exports = router;
