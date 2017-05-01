@@ -1,5 +1,7 @@
  # -*- coding: utf-8 -*-
-import smbus
+
+
+#import smbus
 import time
 import requests
 import json
@@ -9,7 +11,6 @@ import datetime
 bus = smbus.SMBus(1)
 
 URL = "http://pstr-env.us-east-2.elasticbeanstalk.com:80"
-#put the URL here\
 
 addresses = [0x04, 0x08] #08 IS ARDUINO
 
@@ -33,7 +34,6 @@ while True:
     mcu = 0
     
     if not var: continue
-    #print "I have a number..."
     
     writeNumber(mcu, var) # --> Can be changed to send letter or something
     
@@ -52,21 +52,23 @@ while True:
 
     ##### Json parsing to post w/ real data #####
     a = msg.split(",")
-    a.pop()
+    a.pop() # Popping empty string of last element from comma split
     for i in a:
         b.append(i.split(":"))
     for i in b:
         data[i[0]] = float(i[1])
     print(data) #make post request here
+  	# Add text to data with orig.update(new) #
     json_data = json.dumps(data)
     headers = {'content-type': 'application/json'}
     r = requests.post(url=URL, data=json_data, headers=headers)
+    print r.text # Received request or not
     ##### Json parsing to post w/ real data #####
-        
+
 
     print "arduino: ", msg
 
-    print
+    #print
 
     time.sleep(2)
 
