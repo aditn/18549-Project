@@ -52,9 +52,27 @@ router.get('/sensor_data', function(req, res){
     res.json(data);
 });
 
-router.get('/a', function(req, res){
-    console.log('a');
-    res.end('a');
+router.get('/data', function(req, res){
+    console.log(req.query.number);
+
+    var num = req.query.number;
+    if (typeof num === 'undefined' || num === null) {
+        connection.query('SELECT * FROM sensor_data', function(err, results) {
+            if (err) throw err;
+            var json_text = JSON.stringify(results);
+            var data = JSON.parse(json_text);
+            res.json(data);
+        });
+    } else {
+        connection.query('SELECT * FROM (SELECT * FROM sensor_data ORDER BY id DESC LIMIT 10) sub ORDER BY id ASC', function(err, results) {
+            if (err) throw err;
+            var json_text = JSON.stringify(results);
+            var data = JSON.parse(json_text);
+            res.json(data);
+        });
+    }
+
+    console.log('real_data');
 });
 
 router.get('/', function(req, res, next) {
@@ -81,7 +99,6 @@ router.post('/', function(req, res) {
                     'sensor3':sensor3,
                     'sensor4':sensor4,
                     'text':'text'};
-        console.log(data);
         res.end('Received a post request');
 });
 
