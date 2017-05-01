@@ -10,38 +10,8 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <string.h>
+#include "i2c_comm.h"
 
-#define SLAVE_ADDRESS 0x04
-
-volatile uint8_t data;
-
-/* This is going to be a volatile modifitable-by-sprintf data string */
-char* data_string = "Hello World!"; 
-
-void read_force_sensors() {
-    // Read force sensors and sprintf data into data_string
-    // format "F#:1234,F#:1626"
-}
-
-void I2C_received(uint8_t received_data) {
-  data = received_data;
-  printf("Arduino received: %d\r\n", data);
-}
-
-void I2C_requested() {
-  // 255 is currently the signal to send and collect data
-  if (data == 255) {
-    // Collect data from attached sensors
-    read_force_sensors();
-
-    I2C_transmitByte(strlen(data_string));
-  }
-  
-  else {
-    printf("\t\t\tArduino sending back: %c\r\n", data_string[data]);
-    I2C_transmitByte(data_string[data]);
-  }
-}
 
 int main(void)
 {
@@ -49,12 +19,12 @@ int main(void)
    uart_init();
    stdout = &uart_output;
    stdin  = &uart_input;
+   char input;
 
    // Setup ports
    DDRB |= (1<<1) | (1<<0);
    PORTB |= (1<<0);
    PORTB &= ~(1<<1);
-
    I2C_setCallbacks(I2C_received, I2C_requested);
 
    I2C_init(SLAVE_ADDRESS);
