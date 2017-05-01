@@ -1,48 +1,55 @@
-import time
+""" For stopping the script when no person in seat """
 import sys
 
-sb_l1 = float(sys.argv[1])
-sb_r1 = float(sys.argv[2])
-sb_l2 = float(sys.argv[3])
-sb_r2 = float(sys.argv[4])
-sb_l = sb_l1 + sb_l2
-sb_r = sb_r1 + sb_r2
-sf_l = float(sys.argv[5])
-sf_r = float(sys.argv[6])
-st = float(sys.argv[7])
-bl = float(sys.argv[8])
-bu = float(sys.argv[9])
-acceptable_range = 0.1
+# Takes data in kg from cmdline
+SB_L = float(sys.argv[1]) # seat cushion back left
+SB_R = float(sys.argv[2]) # seat cushion back right
+SF_L = float(sys.argv[3]) # seat cushion front left
+SF_R = float(sys.argv[4]) # seat cushion front right
+ST = float(sys.argv[5]) # seat cushion tailbone
+BL = float(sys.argv[6]) # lower back
+BU = float(sys.argv[7]) # upper back
+
+# AcceptaBLe deviation in %
+ACCEPTABLE_RANGE = 0.1
+# Minimum weight to detect someone as "seated"
+MIN_WEIGHT = 2
 
 seated = 0
 correct_posture = 0
 
-std_upper_weight_perc = 0.6725
-std_lower_weight_perc = 1 - std_upper_weight_perc
+# Theoretical percentages for body mass
+STD_BACK_WEIGHT_PERC = 0.6725
+STD_FRONT_WEIGHT_PERC = 1 - STD_BACK_WEIGHT_PERC
 
-print sys.argv
-
-#loop
-if sb_l1 < 50 or sb_r1 < 50 or sf_l < 50 or sf_r < 50:
-    seated = 0
+# Check if there is someone on the seat
+if SB_L < MIN_WEIGHT or SB_R < MIN_WEIGHT or SF_L < MIN_WEIGHT or SF_R < MIN_WEIGHT:
     print "Empty Seat"
     sys.exit()
 else:
     seated = 1
 
-meas_upper_weight = sb_l + sb_r + st + bl + bu
-meas_lower_weight = sf_l + sf_r
+# Summation of measured weights
+MEAS_BACK_WEIGHT = SB_L + SB_R + ST + BL + BU
+MEAS_FRONT_WEIGHT = SF_L + SF_R
 
-meas_upper_weight_perc = meas_upper_weight/(meas_upper_weight+meas_lower_weight)
-meas_lower_weight_perc = meas_lower_weight/(meas_upper_weight+meas_lower_weight)
+# Calculation of weight percentages on front and back of seat
+MEAS_BACK_WEIGHT_PERC = MEAS_BACK_WEIGHT/(MEAS_BACK_WEIGHT+MEAS_FRONT_WEIGHT)
+MEAS_FRONT_WEIGHT_PERC = MEAS_FRONT_WEIGHT/(MEAS_BACK_WEIGHT+MEAS_FRONT_WEIGHT)
 
-if sb_l < sb_r * (1-acceptable_range) or sb_l > sb_r * (1+acceptable_range) or meas_upper_weight_perc < std_upper_weight_perc - acceptable_range or meas_upper_weight_perc > meas_upper_weight_perc + acceptable_range or st < 50 or bl < 50 or bu < 50:
+# Posture correctness check
+# Weight must be distributed evenly on left and right of cushion +- acceptable range
+# Weight on front and back of seat cushion must be at the theoretical proportions +- acceptable range
+# Weight must be greater that the minimum weight
+if SB_L < SB_R * (1-ACCEPTABLE_RANGE) or SB_L > SB_R * (1+ACCEPTABLE_RANGE) or MEAS_BACK_WEIGHT_PERC < STD_BACK_WEIGHT_PERC - ACCEPTABLE_RANGE or MEAS_BACK_WEIGHT_PERC > MEAS_BACK_WEIGHT_PERC + ACCEPTABLE_RANGE or ST < MIN_WEIGHT or BL < MIN_WEIGHT or BU < MIN_WEIGHT:
     correct_posture = 0
     print "Incorrect posture"
 else:
     correct_posture = 1
     print "Correct posture"
 
-posture_score = 1 - 0.6*(abs(std_upper_weight_perc - meas_upper_weight_perc) - abs(std_lower_weight_perc - meas_lower_weight_perc)) - 0.4*abs(sb_r/(sb_l + sb_r))
+# Posture score calculation
+# 1 - (deviation from theoretical seat cushion back weight + deviation from seat cushion front weight) -(deviation of each side weight from 50%)
+posture_score = 1 - abs(STD_BACK_WEIGHT_PERC - MEAS_BACK_WEIGHT_PERC) - abs(STD_FRONT_WEIGHT_PERC - MEAS_FRONT_WEIGHT_PERC) - abs(0.5 - SB_R/(SB_L + SB_R))*2
 print "Posture Score: " + str(posture_score)
 
