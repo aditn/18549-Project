@@ -2,13 +2,15 @@
 if ($ == undefined) {
     console.log('jquery load failed');
 }
-// The time interval between each request
-const timer_interval = 5000;
+
 /*
  * API
  *
  */
-const get_data_url = "http://pstr-env.us-east-2.elasticbeanstalk.com/data";
+const get_data_url = "http://pstr-env.us-east-2.elasticbeanstalk.com/data?number=1";
+
+// curl -H "Content-Type: application/json" -X POST -d '{'sensor1':100,'sensor2':100,'sensor3':100,'sensor4':100,'text':'test'}' http://pstr-env.us-east-2.elasticbeanstalk.com:80
+
 /*
  * @param none
  * @return a jquery deffered object
@@ -122,14 +124,15 @@ function animate() {
     render();
 }
 function create_point(index, data) {
-    if (!data) {
+    // console.log(data);
+    if (data == null) {
         return;
     }
     let geometry = new THREE.SphereGeometry(1);
     let material;
-    if (data < 25) {
+    if (data <= 25) {
         material = new THREE.MeshBasicMaterial({color: 0xffffff});
-    } else if (data < 50) {
+    } else if (data <= 50) {
         material = new THREE.MeshBasicMaterial({color: 0x6bf731});
     } else {
         material = new THREE.MeshBasicMaterial({color: 0xbe4545});
