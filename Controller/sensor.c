@@ -6,6 +6,11 @@
 #include <avr/interrupt.h>
 #include <stdio.h>
 
+void sensor_init(){
+   DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
+   DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
+}
+
 uint16_t adc_read(uint8_t adcx) {
   /* adcx is the analog pin we want to use.  ADMUX's first few bits are
    * the binary representations of the numbers of the pins so we can
@@ -53,7 +58,39 @@ void adc_init(){
    sei();
 }
 
-uint32_t ReadCount(void){
+uint32_t read_avg_force(){
+  uint32_t avg=0;
+  uint8_t i,times;
+  times = 10;
+  for (i=0;i<times;i++){
+     avg+=ReadCount();
+  }
+  avg/=times;
+  //printf("avg force value:%lu\n\r",avg);
+  return avg;
+} 
+
+void tare(){
+  CALIB_OFFSET = 0;
+  CALIB_OFFSET = read_avg_force(); 
+  printf("taring sensors:%lu\n\r",CALIB_OFFSET);
+}
+
+float read_calibrated_value(){
+  uint32_t avg;
+  int32_t avg_offset;
+ 
+  float calib_val=0;
+  avg = read_avg_force();
+  avg_offset = (int32_t)(avg-CALIB_OFFSET);
+  //printf("avg_offset:%li\n\r",avg_offset);
+  calib_val = (float)avg_offset/CALIB_FACTOR;
+  //printf("calib_val:%f\n\r",calib_val);
+ 
+  return(calib_val);
+}
+
+uint32_t ReadCount(){
   uint32_t Count;
   uint8_t i;
   //PC0 is clk
@@ -75,15 +112,13 @@ uint32_t ReadCount(void){
   return(Count);
 } 
 
-void collectforceData(uint32_t* data){
+void collectforceData(float* data){
   // set Data and Manual CLK pins
-  DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
-  DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
    
   // using fake data for now
-  data[0] = ReadCount();
+  data[0] = read_calibrated_value();
   //data[0] = (uint32_t)10;
-  data[1] = (uint32_t)20;
+  data[1] = 35.f;
   //data[2] = (uint32_t)30;
   //data[3] = (uint32_t)40;
 }

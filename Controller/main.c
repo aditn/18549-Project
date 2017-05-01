@@ -25,11 +25,21 @@ int main(void)
    DDRB |= (1<<1) | (1<<0);
    PORTB |= (1<<0);
    PORTB &= ~(1<<1);
+   
+   // Setup I2C
    I2C_setCallbacks(I2C_received, I2C_requested);
-
    I2C_init(SLAVE_ADDRESS);
+   
+   // Setup Sensors
+   sensor_init();
 
-   while(1);
+   // tare force sensors
+   tare();
+
+   while(1){
+     //collectforceData(fData);
+     //sendData(fData);
+   }
 }
 
 
