@@ -24,7 +24,7 @@ void I2C_requested() {
     collectforceData(fData);
 
     for (i=0;i<NUMBER_OF_SENSORS;i++){
-      sprintf(data_str_temp,"f%d:%lu,",i,fData[i]);
+      sprintf(data_str_temp,"sensor%d:%lu,",i,fData[i]);
       strcat(data_str,data_str_temp);
     }
     I2C_transmitByte(strlen(data_str));
