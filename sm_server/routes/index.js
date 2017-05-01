@@ -56,6 +56,7 @@ router.get('/data', function(req, res){
     console.log(req.query.number);
 
     var num = req.query.number;
+    console.log(num)
     if (typeof num === 'undefined' || num === null) {
         connection.query('SELECT * FROM sensor_data', function(err, results) {
             if (err) throw err;
@@ -64,7 +65,7 @@ router.get('/data', function(req, res){
             res.json(data);
         });
     } else {
-        connection.query('SELECT * FROM (SELECT * FROM sensor_data ORDER BY id DESC LIMIT 10) sub ORDER BY id ASC', function(err, results) {
+        connection.query('SELECT * FROM (SELECT * FROM sensor_data ORDER BY id DESC LIMIT ' + num + ') sub ORDER BY id ASC', function(err, results) {
             if (err) throw err;
             var json_text = JSON.stringify(results);
             var data = JSON.parse(json_text);
