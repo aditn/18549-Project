@@ -86,10 +86,10 @@ router.get('/', function(req, res, next) {
 // post request = JSON object with string name, int age
 router.post('/', function(req, res) {
     console.log(req.body);
-    var sensor1 = req.body.sensor0;
-    var sensor2 = req.body.sensor1;
-    var sensor3 = req.body.sensor2;
-    var sensor4 = req.body.sensor3;
+    var sensor1 = req.body.sensor1;
+    var sensor2 = req.body.sensor2;
+    var sensor3 = req.body.sensor3;
+    var sensor4 = req.body.sensor4;
     var text = req.body.text;
     connection.query('INSERT INTO sensor_data (sensor1, sensor2, sensor3, sensor4, text) VALUES (?, ?, ?, ?, ?)', [sensor1, sensor2, sensor3, sensor4, text], function(err, result) {
         if (err) throw err;
