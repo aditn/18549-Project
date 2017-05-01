@@ -1,7 +1,7 @@
  # -*- coding: utf-8 -*-
 
 
-#import smbus
+import smbus
 import time
 import requests
 import json
@@ -38,7 +38,7 @@ while True:
     writeNumber(mcu, var) # --> Can be changed to send letter or something
     
     print "RPI: Hi Arduino, I sent you ", var
-    time.sleep(1)
+    time.sleep(.2)
     
     num_bytes = readNumber(mcu) # Arduino responds with number of bytes in data string
     time.sleep(.2)
@@ -47,7 +47,6 @@ while True:
     for i in xrange(num_bytes):
         writeNumber(mcu, i)
         char = readNumber(mcu)
-        print "RPI: Received --> ", char
         msg += chr(char)
 
     ##### Json parsing to post w/ real data #####
@@ -56,9 +55,13 @@ while True:
     for i in a:
         b.append(i.split(":"))
     for i in b:
-        data[i[0]] = float(i[1])
-    print(data) #make post request here
-  	# Add text to data with orig.update(new) #
+        data[i[0]] = abs(float(i[1]))
+    #make post request here
+    # Add text to data with orig.update(new) #
+
+    print data
+    data.update({"sensor3": 100, "sensor4": 100, "text": "Demo test"})
+
     json_data = json.dumps(data)
     headers = {'content-type': 'application/json'}
     r = requests.post(url=URL, data=json_data, headers=headers)
@@ -66,9 +69,9 @@ while True:
     ##### Json parsing to post w/ real data #####
 
 
-    print "arduino: ", msg
+    #print "Data we sent is: ", data
 
-    #print
+    print
 
-    time.sleep(2)
+    time.sleep(1)
 
