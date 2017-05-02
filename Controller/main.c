@@ -37,8 +37,8 @@ int main(void)
    tare();
 
    while(1){
-     //collectforceData(fData);
-     //sendData(fData);
+     collectforceData(fData);
+     sendData(fData);
    }
 }
 
