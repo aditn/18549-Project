@@ -2,9 +2,9 @@
 #include <avr/io.h>
 
 typedef struct {
-	uint8_t DIR_REG;
-	uint8_t PORT_OUTPUT_REG;
-	uint8_t PORT_INPUT_REG;
+	volatile uint8_t* DIR_REG;
+	volatile uint8_t* PORT_OUTPUT_REG;
+	volatile uint8_t* PORT_INPUT_REG;
 	uint8_t DATA;
 	uint8_t CLK;
 	int32_t CALIB_OFFSET;

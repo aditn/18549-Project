@@ -11,6 +11,7 @@
 #include <avr/interrupt.h>
 #include <string.h>
 #include "i2c_comm.h"
+#include "main.h"
 
 
 int main(void)
@@ -37,8 +38,8 @@ int main(void)
    tare();
 
    while(1){
-     collectforceData(fData);
-     sendData(fData);
+     //collectforceData(fData);
+     //sendData(fData);
    }
 }
 
