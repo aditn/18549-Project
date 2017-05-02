@@ -16,6 +16,7 @@ void sensor_init(){
    SENSORS[SENSOR0].DIR_REG = DDRC;
    SENSORS[SENSOR0].PORT_OUTPUT_REG = PORTC;
    SENSORS[SENSOR0].PORT_INPUT_REG = PINC;
+   SENSORS[SENSOR0].CALIB_FACTOR = -10500;
 
    /* Initializing second sensor */
    DDRC |= (1<<PC2); // Set PC2(clk) as an output pin
@@ -26,6 +27,7 @@ void sensor_init(){
    SENSORS[SENSOR1].DIR_REG = DDRC;
    SENSORS[SENSOR1].PORT_OUTPUT_REG = PORTC;
    SENSORS[SENSOR1].PORT_INPUT_REG = PINC;
+   SENSORS[SENSOR1].CALIB_FACTOR = -10500;
    /* Initializing second sensor */
 
 }
@@ -111,9 +113,9 @@ float read_calibrated_value(uint8_t sensor_id){
  
   float calib_val=0;
   avg = read_avg_force(sensor_id);
-  avg_offset = (int32_t)(avg-CALIB_OFFSETS[sensor_id]);
+  avg_offset = (int32_t)(avg-SENSORS[sensor_id].CALIB_OFFSET);
   //printf("avg_offset:%li\n\r",avg_offset);
-  calib_val = (float)avg_offset/CALIB_FACTOR;
+  calib_val = (float)avg_offset/SENSORS[sensor_id].CALIB_FACTOR;
   //printf("calib_val:%f\n\r",calib_val);
  
   return(calib_val);

@@ -7,7 +7,8 @@ typedef struct {
 	uint8_t PORT_INPUT_REG;
 	uint8_t DATA;
 	uint8_t CLK;
-	uint32_t CALIB_OFFSET;
+	int32_t CALIB_OFFSET;
+	int32_t CALIB_FACTOR;
 } sensor;
 
 sensor SENSORS[NUMBER_OF_SENSORS];
