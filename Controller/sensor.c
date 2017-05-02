@@ -6,9 +6,23 @@
 #include <avr/interrupt.h>
 #include <stdio.h>
 
+
 void sensor_init(){
    DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
    DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
+
+   SENSOR_CLK_PINS[SENSOR0] = PC0;
+   SENSOR_DATA_PINS[SENSOR0] = PC1;
+
+
+   /* Initializing second sensor */
+   DDRC |= (1<<PC2); // Set PC2(clk) as an output pin
+   DDRC &= ~(1<<PC3); // Set PC3(data) as input pin
+
+   SENSOR_CLK_PINS[SENSOR1] = PC2;
+   SENSOR_DATA_PINS[SENSOR1] = PC3;
+   /* Initializing second sensor */
+
 }
 
 uint16_t adc_read(uint8_t adcx) {
@@ -58,12 +72,12 @@ void adc_init(){
    sei();
 }
 
-uint32_t read_avg_force(){
+uint32_t read_avg_force(uint8_t sensor_id){
   uint32_t avg=0;
   uint8_t i,times;
   times = 10;
   for (i=0;i<times;i++){
-     avg+=ReadCount();
+     avg+=ReadCount(sensor_id);
   }
   avg/=times;
   //printf("avg force value:%lu\n\r",avg);
@@ -71,18 +85,28 @@ uint32_t read_avg_force(){
 } 
 
 void tare(){
+  uint8_t i;
+
+  for (i=0; i < NUMBER_OF_SENSORS; i++) {
+    CALIB_OFFSETS[i] = 0;
+    CALIB_OFFSETS[i] = read_avg_force(i);
+    printf("taring sensor%d:%lu\n\r",i, CALIB_OFFSETS[i]);
+  }
+
+  /*
   CALIB_OFFSET = 0;
   CALIB_OFFSET = read_avg_force(); 
   printf("taring sensors:%lu\n\r",CALIB_OFFSET);
+  */
 }
 
-float read_calibrated_value(){
+float read_calibrated_value(uint8_t sensor_id){
   uint32_t avg;
   int32_t avg_offset;
  
   float calib_val=0;
-  avg = read_avg_force();
-  avg_offset = (int32_t)(avg-CALIB_OFFSET);
+  avg = read_avg_force(sensor_id);
+  avg_offset = (int32_t)(avg-CALIB_OFFSETS[sensor_id]);
   //printf("avg_offset:%li\n\r",avg_offset);
   calib_val = (float)avg_offset/CALIB_FACTOR;
   //printf("calib_val:%f\n\r",calib_val);
@@ -90,14 +114,33 @@ float read_calibrated_value(){
   return(calib_val);
 }
 
-uint32_t ReadCount(){
+uint32_t ReadCount(uint8_t sensor_id){
   uint32_t Count;
   uint8_t i;
+
+  uint8_t clock = SENSOR_CLK_PINS[sensor_id];
+  uint8_t data = SENSOR_DATA_PINS[sensor_id];
+
+  PORTC &= ~_BV(clock);
+  PORTC |= _BV(data);
+  /*
   //PC0 is clk
   PORTC &= ~(1<<PC0);
   //PC1 is data
   PORTC |= (1<<PC1); // set PC1 as input
+  */
+
   Count=0;
+
+  while(PINC & _BV(data)); 
+  for (i=0;i<24;i++){
+    PORTC |= _BV(clock);
+    Count=Count<<1;
+    PORTC &= ~_BV(clock);
+    if(PINC & _BV(data)) Count++;
+  }
+
+  /*
   while(PINC & (1<<PC1)); 
   for (i=0;i<24;i++){
     PORTC |= (1<<PC0);
@@ -105,10 +148,16 @@ uint32_t ReadCount(){
     PORTC &= ~(1<<PC0);
     if(PINC & (1<<PC1)) Count++;
   }
+  */
   
+  PORTC |= _BV(clock);
+  Count=Count^0x800000;
+  PORTC &= ~_BV(clock);
+  /*
   PORTC |= (1<<PC0);
   Count=Count^0x800000;
   PORTC &= ~(1<<PC0);
+  */
   return(Count);
 } 
 
@@ -116,9 +165,9 @@ void collectforceData(float* data){
   // set Data and Manual CLK pins
    
   // using fake data for now
-  data[0] = read_calibrated_value();
+  data[SENSOR0] = read_calibrated_value(SENSOR0);
   //data[0] = (uint32_t)10;
-  data[1] = 35.f;
+  data[SENSOR1] = 35.f;
   //data[2] = (uint32_t)30;
   //data[3] = (uint32_t)40;
 }
