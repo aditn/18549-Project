@@ -8,7 +8,7 @@
 
  - Tony Jin
 
- - Nikil Nilakantan
+ - Nikhil Nilakantan
 
 
 ## System components
