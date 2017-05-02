@@ -11,16 +11,21 @@ void sensor_init(){
    DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
    DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
 
-   SENSOR_CLK_PINS[SENSOR0] = PC0;
-   SENSOR_DATA_PINS[SENSOR0] = PC1;
-
+   SENSORS[SENSOR0].CLK = PC0;
+   SENSORS[SENSOR0].DATA = PC1;
+   SENSORS[SENSOR0].DIR_REG = DDRC;
+   SENSORS[SENSOR0].PORT_OUTPUT_REG = PORTC;
+   SENSORS[SENSOR0].PORT_INPUT_REG = PINC;
 
    /* Initializing second sensor */
    DDRC |= (1<<PC2); // Set PC2(clk) as an output pin
    DDRC &= ~(1<<PC3); // Set PC3(data) as input pin
 
-   SENSOR_CLK_PINS[SENSOR1] = PC2;
-   SENSOR_DATA_PINS[SENSOR1] = PC3;
+   SENSORS[SENSOR1].CLK = PC2;
+   SENSORS[SENSOR1].CLK = PC3;
+   SENSORS[SENSOR1].DIR_REG = DDRC;
+   SENSORS[SENSOR1].PORT_OUTPUT_REG = PORTC;
+   SENSORS[SENSOR1].PORT_INPUT_REG = PINC;
    /* Initializing second sensor */
 
 }
@@ -85,12 +90,12 @@ uint32_t read_avg_force(uint8_t sensor_id){
 } 
 
 void tare(){
-  uint8_t i;
+  uint8_t sensor_id;
 
-  for (i=0; i < NUMBER_OF_SENSORS; i++) {
-    CALIB_OFFSETS[i] = 0;
-    CALIB_OFFSETS[i] = read_avg_force(i);
-    printf("taring sensor%d:%lu\n\r",i, CALIB_OFFSETS[i]);
+  for (sensor_id=0; sensor_id < NUMBER_OF_SENSORS; sensor_id++) {
+    SENSORS[sensor_id].CALIB_OFFSET = 0;
+    SENSORS[sensor_id].CALIB_OFFSET = read_avg_force(sensor_id);
+    printf("taring sensor%d:%lu\n\r",sensor_id, SENSORS[sensor_id].CALIB_OFFSET);
   }
 
   /*
@@ -118,11 +123,13 @@ uint32_t ReadCount(uint8_t sensor_id){
   uint32_t Count;
   uint8_t i;
 
-  uint8_t clock = SENSOR_CLK_PINS[sensor_id];
-  uint8_t data = SENSOR_DATA_PINS[sensor_id];
+  uint8_t clk = SENSORS[sensor_id].CLK;
+  uint8_t data = SENSORS[sensor_id].DATA;
+  uint8_t output_reg = SENSORS[sensor_id].PORT_OUTPUT_REG;
+  uint8_t input_reg = SENSORS[sensor_id].PORT_INPUT_REG;
 
-  PORTC &= ~_BV(clock);
-  PORTC |= _BV(data);
+  output_reg &= ~_BV(clk);
+  output_reg |= _BV(data);
   /*
   //PC0 is clk
   PORTC &= ~(1<<PC0);
@@ -132,12 +139,12 @@ uint32_t ReadCount(uint8_t sensor_id){
 
   Count=0;
 
-  while(PINC & _BV(data)); 
+  while(input_reg & _BV(data)); 
   for (i=0;i<24;i++){
-    PORTC |= _BV(clock);
+    output_reg |= _BV(clk);
     Count=Count<<1;
-    PORTC &= ~_BV(clock);
-    if(PINC & _BV(data)) Count++;
+    output_reg &= ~_BV(clk);
+    if(input_reg & _BV(data)) Count++;
   }
 
   /*
@@ -150,9 +157,9 @@ uint32_t ReadCount(uint8_t sensor_id){
   }
   */
   
-  PORTC |= _BV(clock);
+  output_reg |= _BV(clk);
   Count=Count^0x800000;
-  PORTC &= ~_BV(clock);
+  output_reg &= ~_BV(clk);
   /*
   PORTC |= (1<<PC0);
   Count=Count^0x800000;
