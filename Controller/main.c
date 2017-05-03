@@ -20,7 +20,7 @@ int main(void)
    uart_init();
    stdout = &uart_output;
    stdin  = &uart_input;
-   char input;
+   //char input;
 
    // Setup ports
    DDRB |= (1<<1) | (1<<0);

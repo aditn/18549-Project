@@ -15,7 +15,7 @@ void I2C_received(uint8_t received_data) {
 
 void I2C_requested() {
   // 255 is currently the signal to send and collect data
-  int i,len;
+  int i;
   char data_str_temp[20];
   //char data_str[20*NUMBER_OF_SENSORS];
   if (data == 255) {

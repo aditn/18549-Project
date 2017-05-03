@@ -82,7 +82,7 @@ void adc_init(){
 uint32_t read_avg_force(uint8_t sensor_id){
   uint32_t avg=0;
   uint8_t i,times;
-  times = 10;
+  times = 5;
   for (i=0;i<times;i++){
      avg+=ReadCount(sensor_id);
   }
@@ -94,11 +94,11 @@ uint32_t read_avg_force(uint8_t sensor_id){
 void tare(){
   uint8_t sensor_id=0;
 
-  //for (sensor_id=0; sensor_id < NUMBER_OF_SENSORS; sensor_id++) {
+  for (sensor_id=0; sensor_id < NUMBER_OF_SENSORS; sensor_id++) {
     SENSORS[sensor_id].CALIB_OFFSET = 0;
     SENSORS[sensor_id].CALIB_OFFSET = read_avg_force(sensor_id);
     printf("taring sensor%d:%lu\n\r",sensor_id, SENSORS[sensor_id].CALIB_OFFSET);
-  //}
+  }
 
   /*
   CALIB_OFFSET = 0;
@@ -127,12 +127,53 @@ uint32_t ReadCount(uint8_t sensor_id){
 
   uint8_t clk = SENSORS[sensor_id].CLK;
   uint8_t data = SENSORS[sensor_id].DATA;
-  uint8_t output_reg = *SENSORS[sensor_id].PORT_OUTPUT_REG;
-  uint8_t input_reg = *SENSORS[sensor_id].PORT_INPUT_REG;
+  volatile uint8_t *output_reg = SENSORS[sensor_id].PORT_OUTPUT_REG;
+  volatile uint8_t *input_reg = SENSORS[sensor_id].PORT_INPUT_REG;
 
-  //output_reg &= ~_BV(clk);
-  //output_reg |= _BV(data);
+  /*
+  output_reg &= ~_BV(clk);
+  output_reg |= _BV(data);
+
+  printf("Saved output_reg is: %d ------ Port value is: %d\r\n", output_reg, PORTC);
+  Count=0;
+
+  while(input_reg & _BV(data)); 
+  for (i=0;i<24;i++){
+    output_reg |= _BV(clk);
+    Count=Count<<1;
+    output_reg &= ~_BV(clk);
+    if(input_reg & _BV(data)) Count++;
+  }
   
+  output_reg |= _BV(clk);
+  Count=Count^0x800000;
+  output_reg &= ~_BV(clk);
+  */
+
+
+
+  *output_reg &= ~_BV(clk);
+  *output_reg |= _BV(data);
+
+  //printf("Saved output_reg is: %d ------ Port value is: %d\r\n", *output_reg, PORTC);
+  Count=0;
+
+  while(*input_reg & _BV(data)); 
+  for (i=0;i<24;i++){
+    *output_reg |= _BV(clk);
+    Count=Count<<1;
+    *output_reg &= ~_BV(clk);
+    if(*input_reg & _BV(data)) Count++;
+  }
+  
+  *output_reg |= _BV(clk);
+  Count=Count^0x800000;
+  *output_reg &= ~_BV(clk);
+
+
+
+
+  /*
   //PC0 is clk
   PORTC &= ~(1<<clk);
   //PC1 is data
@@ -140,15 +181,6 @@ uint32_t ReadCount(uint8_t sensor_id){
 
   Count=0;
 
-  /*while(input_reg & _BV(data)); 
-  for (i=0;i<24;i++){
-    output_reg |= _BV(clk);
-    Count=Count<<1;
-    output_reg &= ~_BV(clk);
-    if(input_reg & _BV(data)) Count++;
-  }*/
-
-  
   while(PINC & (1<<data)); 
   for (i=0;i<24;i++){
     PORTC |= (1<<clk);
@@ -157,14 +189,11 @@ uint32_t ReadCount(uint8_t sensor_id){
     if(PINC & (1<<data)) Count++;
   }
   
-  
-  /*output_reg |= _BV(clk);
-  Count=Count^0x800000;
-  output_reg &= ~_BV(clk);*/
-  
   PORTC |= (1<<clk);
   Count=Count^0x800000;
   PORTC &= ~(1<<clk);
+  */
+
   return(Count);
 } 
 
@@ -174,7 +203,8 @@ void collectforceData(float* data){
   // using fake data for now
   data[SENSOR0] = read_calibrated_value(SENSOR0);
   //data[0] = (uint32_t)10;
-  data[SENSOR1] = 35.f;
+  //data[SENSOR1] = 35.f;
+  data[SENSOR1] = read_calibrated_value(SENSOR1);
   //data[2] = (uint32_t)30;
   //data[3] = (uint32_t)40;
 }
