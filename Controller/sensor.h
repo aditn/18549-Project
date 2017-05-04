@@ -17,7 +17,7 @@ float fData[NUMBER_OF_SENSORS];
 void sensor_init();
 void adc_init();
 uint16_t adc_read(uint8_t adcx);
-uint32_t read_avg_force(uint8_t sensor_id);
+uint32_t read_avg_force(uint8_t sensor_id, uint8_t times);
 void tare();
 float read_calibrated_value(uint8_t sensor_id);
 uint32_t ReadCount(uint8_t sensor_id); 

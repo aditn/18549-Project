@@ -27,16 +27,21 @@ int main(void)
    PORTB |= (1<<0);
    PORTB &= ~(1<<1);
    
-   // Setup I2C
-   I2C_setCallbacks(I2C_received, I2C_requested);
-   I2C_init(SLAVE_ADDRESS);
+   
    
    // Setup Sensors
    sensor_init();
 
+   printf("Debounce...\n");
+   _delay_ms(1000*10);
+
    // tare force sensors
    tare();
 
+   // Setup I2C
+   I2C_setCallbacks(I2C_received, I2C_requested);
+   I2C_init(SLAVE_ADDRESS);
+   
    while(1){
      //collectforceData(fData);
      //sendData(fData);

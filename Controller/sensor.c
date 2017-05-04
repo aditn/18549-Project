@@ -16,7 +16,7 @@ void sensor_init(){
    SENSORS[SENSOR0].DIR_REG = &DDRC;
    SENSORS[SENSOR0].PORT_OUTPUT_REG = &PORTC;
    SENSORS[SENSOR0].PORT_INPUT_REG = &PINC;
-   SENSORS[SENSOR0].CALIB_FACTOR = -10500;
+   SENSORS[SENSOR0].CALIB_FACTOR = -12000;
 
    /* Initializing second sensor */
    DDRC |= (1<<PC2); // Set PC2(clk) as an output pin
@@ -27,8 +27,36 @@ void sensor_init(){
    SENSORS[SENSOR1].DIR_REG = &DDRC;
    SENSORS[SENSOR1].PORT_OUTPUT_REG = &PORTC;
    SENSORS[SENSOR1].PORT_INPUT_REG = &PINC;
-   SENSORS[SENSOR1].CALIB_FACTOR = -10500;
+   SENSORS[SENSOR1].CALIB_FACTOR = -11000;
    /* Initializing second sensor */
+
+
+
+   /* Initializing THIRD PORTD sensor */
+   DDRD |= (1<<PD7); // Set PD7(clk) as an output pin
+   DDRD &= ~(1<<PD6); // Set PD6(data) as input pin
+
+   SENSORS[SENSOR2].CLK = PD7;
+   SENSORS[SENSOR2].DATA = PD6;
+   SENSORS[SENSOR2].DIR_REG = &DDRD;
+   SENSORS[SENSOR2].PORT_OUTPUT_REG = &PORTD;
+   SENSORS[SENSOR2].PORT_INPUT_REG = &PIND;
+   SENSORS[SENSOR2].CALIB_FACTOR = -11000;
+   /* Initializing THIRD PORTD sensor */
+
+
+
+   /* Initializing FOURTH PORTB sensor */
+   DDRB |= (1<<PB5); // Set PB7(clk) as an output pin
+   DDRB &= ~(1<<PB4); // Set PB6(data) as input pin
+
+   SENSORS[SENSOR3].CLK = PB5;
+   SENSORS[SENSOR3].DATA = PB4;
+   SENSORS[SENSOR3].DIR_REG = &DDRB;
+   SENSORS[SENSOR3].PORT_OUTPUT_REG = &PORTB;
+   SENSORS[SENSOR3].PORT_INPUT_REG = &PINB;
+   SENSORS[SENSOR3].CALIB_FACTOR = -11000;
+   /* Initializing THIRD PORTD sensor */
 
 }
 
@@ -79,10 +107,9 @@ void adc_init(){
    sei();
 }
 
-uint32_t read_avg_force(uint8_t sensor_id){
+uint32_t read_avg_force(uint8_t sensor_id, uint8_t times){
   uint32_t avg=0;
-  uint8_t i,times;
-  times = 5;
+  uint8_t i;
   for (i=0;i<times;i++){
      avg+=ReadCount(sensor_id);
   }
@@ -96,7 +123,7 @@ void tare(){
 
   for (sensor_id=0; sensor_id < NUMBER_OF_SENSORS; sensor_id++) {
     SENSORS[sensor_id].CALIB_OFFSET = 0;
-    SENSORS[sensor_id].CALIB_OFFSET = read_avg_force(sensor_id);
+    SENSORS[sensor_id].CALIB_OFFSET = read_avg_force(sensor_id, 15);
     printf("taring sensor%d:%lu\n\r",sensor_id, SENSORS[sensor_id].CALIB_OFFSET);
   }
 
@@ -112,7 +139,7 @@ float read_calibrated_value(uint8_t sensor_id){
   int32_t avg_offset;
  
   float calib_val=0;
-  avg = read_avg_force(sensor_id);
+  avg = read_avg_force(sensor_id, 2);
   avg_offset = ((int32_t)avg-SENSORS[sensor_id].CALIB_OFFSET);
   //printf("avg_offset:%li\n\r",avg_offset);
   calib_val = (float)avg_offset/SENSORS[sensor_id].CALIB_FACTOR;
@@ -207,6 +234,9 @@ void collectforceData(float* data){
   data[SENSOR1] = read_calibrated_value(SENSOR1);
   //data[2] = (uint32_t)30;
   //data[3] = (uint32_t)40;
+  data[SENSOR2] = read_calibrated_value(SENSOR2);
+
+  data[SENSOR3] = read_calibrated_value(SENSOR3);
 }
 
 
