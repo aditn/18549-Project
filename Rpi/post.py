@@ -9,9 +9,9 @@ data['sensor1'] = 50
 data['sensor2'] = 50
 data['sensor3'] = 22
 data['sensor4'] = 22
-data['st'] = 4;
-data['bl'] = 4;
-data['bu'] = 4;
+data['fsr1'] = 4;
+data['fsr2'] = 4;
+data['fsr3'] = 4;
 json_data = json.dumps(data)
 print json_data
               

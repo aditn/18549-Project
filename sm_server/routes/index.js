@@ -134,7 +134,7 @@ router.get('/data2', function(req, res){
         });
     }
 
-    console.log('real_data2');
+    console.log('final_data');
 });
 
 
@@ -184,9 +184,9 @@ router.post('/', function(req, res) {
     var sb_r = req.body.sensor2;
     var sf_l = req.body.sensor4;
     var sf_r = req.body.sensor3;
-    var st = req.body.st;
-    var bl = req.body.bl;
-    var bu = req.body.bu;
+    var st = req.body.fsr1;
+    var bl = req.body.fsr2;
+    var bu = req.body.fsr3;
 
     var posture_data = checkPosture(sb_l, sb_r, sf_l, sf_r, st, bl, bu);
 
@@ -196,7 +196,7 @@ router.post('/', function(req, res) {
         if (posture_data['correct_posture'] == 0) {
             res.end("Incorrect Posture. Score: " + posture_data['posture_score']);
         } else {
-             res.end("Correct Posture. Score: " + posture_data['posture_score']);
+            res.end("Correct Posture. Score: " + posture_data['posture_score']);
         }
 
         connection.query('INSERT INTO sensor_data2 (user, sb_l_weight, sb_r_weight, sf_l_weight, sf_r_weight, st, bl, bu, sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, correct, score, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 

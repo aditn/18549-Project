@@ -8,9 +8,9 @@ POST request JSON format:
  'sensor2': (float),
  'sensor3': (float),
  'sensor4': (float),
- 'st': (float),
- 'bl': (float),
- 'bu': (float)}
+ 'fsr1': (float),
+ 'fsr2': (float),
+ 'fsr3': (float)}
 
 
 <--------------GET---------------->
