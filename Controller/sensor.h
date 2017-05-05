@@ -22,7 +22,7 @@ void tare();
 float read_calibrated_value(uint8_t sensor_id);
 uint32_t ReadCount(uint8_t sensor_id); 
 void collectforceData(float* data);
-//uint32_t CALIB_OFFSET;
+void read_FSR(float* data);
 
 uint32_t CALIB_OFFSETS[NUMBER_OF_SENSORS]; 
 uint8_t SENSOR_DATA_PINS[NUMBER_OF_SENSORS];

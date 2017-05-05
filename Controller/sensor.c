@@ -8,56 +8,60 @@
 
 
 void sensor_init(){
-   DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
-   DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
 
-   SENSORS[SENSOR0].CLK = PC0;
-   SENSORS[SENSOR0].DATA = PC1;
-   SENSORS[SENSOR0].DIR_REG = &DDRC;
-   SENSORS[SENSOR0].PORT_OUTPUT_REG = &PORTC;
-   SENSORS[SENSOR0].PORT_INPUT_REG = &PINC;
-   SENSORS[SENSOR0].CALIB_FACTOR = -12000;
+  /************ LOAD CELL MCU **************/
+  DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
+  DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
 
-   /* Initializing second sensor */
-   DDRC |= (1<<PC2); // Set PC2(clk) as an output pin
-   DDRC &= ~(1<<PC3); // Set PC3(data) as input pin
+  SENSORS[SENSOR0].CLK = PC0;
+  SENSORS[SENSOR0].DATA = PC1;
+  SENSORS[SENSOR0].DIR_REG = &DDRC;
+  SENSORS[SENSOR0].PORT_OUTPUT_REG = &PORTC;
+  SENSORS[SENSOR0].PORT_INPUT_REG = &PINC;
+  SENSORS[SENSOR0].CALIB_FACTOR = -12000;
 
-   SENSORS[SENSOR1].CLK = PC2;
-   SENSORS[SENSOR1].DATA = PC3;
-   SENSORS[SENSOR1].DIR_REG = &DDRC;
-   SENSORS[SENSOR1].PORT_OUTPUT_REG = &PORTC;
-   SENSORS[SENSOR1].PORT_INPUT_REG = &PINC;
-   SENSORS[SENSOR1].CALIB_FACTOR = -11000;
-   /* Initializing second sensor */
+  /* Initializing second sensor */
+  DDRC |= (1<<PC2); // Set P(clk) as an output pin
+  DDRC &= ~(1<<PC3); // Set PC3(data) as input pin
 
-
-
-   /* Initializing THIRD PORTD sensor */
-   DDRD |= (1<<PD7); // Set PD7(clk) as an output pin
-   DDRD &= ~(1<<PD6); // Set PD6(data) as input pin
-
-   SENSORS[SENSOR2].CLK = PD7;
-   SENSORS[SENSOR2].DATA = PD6;
-   SENSORS[SENSOR2].DIR_REG = &DDRD;
-   SENSORS[SENSOR2].PORT_OUTPUT_REG = &PORTD;
-   SENSORS[SENSOR2].PORT_INPUT_REG = &PIND;
-   SENSORS[SENSOR2].CALIB_FACTOR = -11000;
-   /* Initializing THIRD PORTD sensor */
+  SENSORS[SENSOR1].CLK = PC2;
+  SENSORS[SENSOR1].DATA = PC3;
+  SENSORS[SENSOR1].DIR_REG = &DDRC;
+  SENSORS[SENSOR1].PORT_OUTPUT_REG = &PORTC;
+  SENSORS[SENSOR1].PORT_INPUT_REG = &PINC;
+  SENSORS[SENSOR1].CALIB_FACTOR = -11000;
+  /* Initializing second sensor */
 
 
+  /* Initializing THIRD PORTD sensor */
+  DDRD |= (1<<PD7); // Set PD7(clk) as an output pin
+  DDRD &= ~(1<<PD6); // Set PD6(data) as input pin
 
-   /* Initializing FOURTH PORTB sensor */
-   DDRB |= (1<<PB5); // Set PB7(clk) as an output pin
-   DDRB &= ~(1<<PB4); // Set PB6(data) as input pin
+  SENSORS[SENSOR2].CLK = PD7;
+  SENSORS[SENSOR2].DATA = PD6;
+  SENSORS[SENSOR2].DIR_REG = &DDRD;
+  SENSORS[SENSOR2].PORT_OUTPUT_REG = &PORTD;
+  SENSORS[SENSOR2].PORT_INPUT_REG = &PIND;
+  SENSORS[SENSOR2].CALIB_FACTOR = -11000;
+  /* Initializing THIRD PORTD sensor */
 
-   SENSORS[SENSOR3].CLK = PB5;
-   SENSORS[SENSOR3].DATA = PB4;
-   SENSORS[SENSOR3].DIR_REG = &DDRB;
-   SENSORS[SENSOR3].PORT_OUTPUT_REG = &PORTB;
-   SENSORS[SENSOR3].PORT_INPUT_REG = &PINB;
-   SENSORS[SENSOR3].CALIB_FACTOR = -11000;
-   /* Initializing THIRD PORTD sensor */
+  /* Initializing FOURTH PORTB sensor */
+  DDRB |= (1<<PB5); // Set PB5(clk) as an output pin
+  DDRB &= ~(1<<PB4); // Set PB4(data) as input pin
 
+  SENSORS[SENSOR3].CLK = PB5;
+  SENSORS[SENSOR3].DATA = PB4;
+  SENSORS[SENSOR3].DIR_REG = &DDRB;
+  SENSORS[SENSOR3].PORT_OUTPUT_REG = &PORTB;
+  SENSORS[SENSOR3].PORT_INPUT_REG = &PINB;
+  SENSORS[SENSOR3].CALIB_FACTOR = -11000;
+  /* Initializing THIRD PORTD sensor */
+  /************ LOAD CELL MCU **************/
+
+
+  /**************** FSR MCU ****************/
+  //DDRC &= (~_BV(PC2) | ~_BV(PC1) | ~_BV(PC0)); // Set ADC pins PC(2-0) as input pins
+  /**************** FSR MCU ****************/
 }
 
 uint16_t adc_read(uint8_t adcx) {
@@ -114,7 +118,6 @@ uint32_t read_avg_force(uint8_t sensor_id, uint8_t times){
      avg+=ReadCount(sensor_id);
   }
   avg/=times;
-  //printf("avg force value:%lu\n\r",avg);
   return avg;
 } 
 
@@ -126,12 +129,6 @@ void tare(){
     SENSORS[sensor_id].CALIB_OFFSET = read_avg_force(sensor_id, 15);
     printf("taring sensor%d:%lu\n\r",sensor_id, SENSORS[sensor_id].CALIB_OFFSET);
   }
-
-  /*
-  CALIB_OFFSET = 0;
-  CALIB_OFFSET = read_avg_force(); 
-  printf("taring sensors:%lu\n\r",CALIB_OFFSET);
-  */
 }
 
 float read_calibrated_value(uint8_t sensor_id){
@@ -141,9 +138,7 @@ float read_calibrated_value(uint8_t sensor_id){
   float calib_val=0;
   avg = read_avg_force(sensor_id, 2);
   avg_offset = ((int32_t)avg-SENSORS[sensor_id].CALIB_OFFSET);
-  //printf("avg_offset:%li\n\r",avg_offset);
   calib_val = (float)avg_offset/SENSORS[sensor_id].CALIB_FACTOR;
-  //printf("calib_val:%f\n\r",calib_val);
  
   return(calib_val);
 }
@@ -157,32 +152,9 @@ uint32_t ReadCount(uint8_t sensor_id){
   volatile uint8_t *output_reg = SENSORS[sensor_id].PORT_OUTPUT_REG;
   volatile uint8_t *input_reg = SENSORS[sensor_id].PORT_INPUT_REG;
 
-  /*
-  output_reg &= ~_BV(clk);
-  output_reg |= _BV(data);
-
-  printf("Saved output_reg is: %d ------ Port value is: %d\r\n", output_reg, PORTC);
-  Count=0;
-
-  while(input_reg & _BV(data)); 
-  for (i=0;i<24;i++){
-    output_reg |= _BV(clk);
-    Count=Count<<1;
-    output_reg &= ~_BV(clk);
-    if(input_reg & _BV(data)) Count++;
-  }
-  
-  output_reg |= _BV(clk);
-  Count=Count^0x800000;
-  output_reg &= ~_BV(clk);
-  */
-
-
-
   *output_reg &= ~_BV(clk);
   *output_reg |= _BV(data);
 
-  //printf("Saved output_reg is: %d ------ Port value is: %d\r\n", *output_reg, PORTC);
   Count=0;
 
   while(*input_reg & _BV(data)); 
@@ -197,46 +169,23 @@ uint32_t ReadCount(uint8_t sensor_id){
   Count=Count^0x800000;
   *output_reg &= ~_BV(clk);
 
-
-
-
-  /*
-  //PC0 is clk
-  PORTC &= ~(1<<clk);
-  //PC1 is data
-  PORTC |= (1<<data); // set PC1 as input
-
-  Count=0;
-
-  while(PINC & (1<<data)); 
-  for (i=0;i<24;i++){
-    PORTC |= (1<<clk);
-    Count=Count<<1;
-    PORTC &= ~(1<<clk);
-    if(PINC & (1<<data)) Count++;
-  }
-  
-  PORTC |= (1<<clk);
-  Count=Count^0x800000;
-  PORTC &= ~(1<<clk);
-  */
-
   return(Count);
 } 
 
 void collectforceData(float* data){
-  // set Data and Manual CLK pins
-   
-  // using fake data for now
   data[SENSOR0] = read_calibrated_value(SENSOR0);
-  //data[0] = (uint32_t)10;
-  //data[SENSOR1] = 35.f;
+
   data[SENSOR1] = read_calibrated_value(SENSOR1);
-  //data[2] = (uint32_t)30;
-  //data[3] = (uint32_t)40;
+
   data[SENSOR2] = read_calibrated_value(SENSOR2);
 
   data[SENSOR3] = read_calibrated_value(SENSOR3);
+}
+
+void read_FSR(float* data) {
+  data[SENSOR0] = adc_read(PC0);
+  //data[SENSOR1] = adc_read(PC1);
+  //data[SENSOR2] = adc_read(PC2);
 }
 
 

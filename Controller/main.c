@@ -32,18 +32,20 @@ int main(void)
    // Setup Sensors
    sensor_init();
 
-   printf("Debounce...\n");
-   _delay_ms(1000*10);
-
-   // tare force sensors
+   /**** LOAD CELL MCU ****/
+   _delay_ms(1000*10); // Debounce load cell signal
    tare();
+   /**** LOAD CELL MCU ****/
 
+   printf("Tared, doing I2C\r\n");
    // Setup I2C
    I2C_setCallbacks(I2C_received, I2C_requested);
    I2C_init(SLAVE_ADDRESS);
-   
+
+   printf("READY\r\n");
    while(1){
      //collectforceData(fData);
+     //read_FSR(fData);
      //sendData(fData);
    }
 }
