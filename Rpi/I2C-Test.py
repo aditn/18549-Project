@@ -68,7 +68,7 @@ while True:
     print r.text # Received request or not
     ##### Json parsing to post w/ real data #####
 
-
+    
     #print "Data we sent is: ", data
 
     print
