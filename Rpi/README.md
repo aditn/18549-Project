@@ -4,18 +4,37 @@ Server URL = http://pstr-env.us-east-2.elasticbeanstalk.com:80
 
 POST request JSON format:
 
-{'sensor1': (int),
- 'sensor2': (int),
- 'sensor3': (int),
- 'sensor4': (int),
- 'text': (String)}
+{'sensor1': (float),
+ 'sensor2': (float),
+ 'sensor3': (float),
+ 'sensor4': (float),
+ 'st': (float),
+ 'bl': (float),
+ 'bu': (float)}
 
 
 <--------------GET---------------->
 
 GET request JSON array format:
 
-[{'id': (int), 'sensor1': (int), 'sensor2': (int), 'sensor3': (int), 'sensor4': (int), 'text': (String)},
+GET URL: http://pstr-env.us-east-2.elasticbeanstalk.com:80/data2
+
+[{'id': (int), 
+  'user': (String),
+  'sb_l_weight': (float), 
+  'sb_r_weight': (float), 
+  'sf_l_weight': (float), 
+  'sf_r_weight': (float),
+  'st': (float),
+  'bl': (float),
+  'bu': (float),
+  'sb_l_perc': (float),
+  'sb_r_perc': (float),
+  'sf_l_perc': (float),
+  'sf_r_perc': (float),
+  'correct': (int),
+  'score': (float),
+  'timestamp': (timestamp)},
  {...},
  {...}]
 
