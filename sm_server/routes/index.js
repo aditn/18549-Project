@@ -23,7 +23,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
     if (err) console.log('Database connection error.');
-    console.log('You are now connected...');
+    else console.log('You are now connected...');
 });
 
 /**
@@ -33,6 +33,10 @@ connection.connect(function(err) {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+// Current user
+var cur_user = 'test';
+
 // Define the min and max of our simulated data
 const simulat_data_min = 0;
 const simulat_data_max = 100;
@@ -95,6 +99,7 @@ function checkPosture(sb_l, sb_r, sf_l, sf_r, st, bl, bu) {
     }
 }
 
+// Get random sensor data for testing
 router.get('/sensor_data', function(req, res){
     var sensor1 = getRandomInt(simulat_data_min,simulat_data_max);
     var sensor2 = getRandomInt(simulat_data_min,simulat_data_max);
@@ -107,26 +112,35 @@ router.get('/sensor_data', function(req, res){
         'sensor3': sensor3,
         'sensor4': sensor4
     };
-    console.log('sensor_data');
+    console.log('random_data');
     res.json(data);
 });
 
+// Get data from real database
 router.get('/data2', function(req, res){
     var num = req.query.number;
+    var user = req.query.user;
+    // check if valid number in param
     if (isNaN(num) || parseInt(num) < 1) {
-        console.log('here');
-        num = null;;
+        num = null;
     }
-    console.log(num)
+
+    // check if valid user in param
+    if (typeof user === 'undefined' || user === null || user.length == 0) {
+        user = 'test';
+    }
+
+    // If number specified, get N rows from database, else get all rows
     if (typeof num === 'undefined' || num === null) {
-        connection.query('SELECT * FROM sensor_data2', function(err, results) {
+        console.log(user);
+        connection.query('SELECT * FROM sensor_data2 WHERE user=\'' + user + '\'', function(err, results) {
             if (err) res.end('GET request database query error.');
             var json_text = JSON.stringify(results);
             var data = JSON.parse(json_text);
             res.json(data);
         });
     } else {
-        connection.query('SELECT * FROM (SELECT * FROM sensor_data2 ORDER BY id DESC LIMIT ' + num + ') sub ORDER BY id ASC', function(err, results) {
+        connection.query('SELECT * FROM (SELECT * FROM sensor_data2 WHERE user=\'' + user + '\' ORDER BY id DESC LIMIT ' + num + ') sub ORDER BY id ASC', function(err, results) {
             if (err) res.end('GET request database query error.');
             var json_text = JSON.stringify(results);
             var data = JSON.parse(json_text);
@@ -137,11 +151,10 @@ router.get('/data2', function(req, res){
     console.log('final_data');
 });
 
-
+// Get data from testing database
 router.get('/data', function(req, res){
     var num = req.query.number;
     if (isNaN(num) || parseInt(num) < 1) {
-        console.log('here');
         num = null;;
     }
     console.log(num)
@@ -164,22 +177,21 @@ router.get('/data', function(req, res){
     console.log('real_data');
 });
 
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
     console.log('Normal GET request');
     res.end('Hello Team');
     //res.render('index', { title: 'PSTR' });
 });
 
-// assuming there is already a table called 'people' created
-// rows: int id, string name, int age
-// post request = JSON object with string name, int age
+// On POST request, perform posture checking and add weights and proportions to database
 router.post('/', function(req, res) {
     console.log(req.body);
 
     let timestamp = new Date();
     dateformat(timestamp, 'yyyymmddhhmmss');
 
-    var user = "test";
+    // Get values from POST data
+    var user = cur_user;
     var sb_l = req.body.sensor1;
     var sb_r = req.body.sensor2;
     var sf_l = req.body.sensor4;
@@ -188,7 +200,9 @@ router.post('/', function(req, res) {
     var bl = req.body.fsr2;
     var bu = req.body.fsr3;
 
+    // Check posture
     var posture_data = checkPosture(sb_l, sb_r, sf_l, sf_r, st, bl, bu);
+
 
     if (posture_data['seated'] == 0) {
         res.end('Not Seated');
@@ -199,10 +213,29 @@ router.post('/', function(req, res) {
             res.end("Correct Posture. Score: " + posture_data['posture_score']);
         }
 
-        connection.query('INSERT INTO sensor_data2 (user, sb_l_weight, sb_r_weight, sf_l_weight, sf_r_weight, st, bl, bu, sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, correct, score, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-                         [user, sb_l, sb_r, sf_l, sf_r, st, bl, bu, posture_data['sb_l_perc'], posture_data['sb_r_perc'], posture_data['sf_l_perc'], posture_data['sf_r_perc'], posture_data['correct_posture'], posture_data['posture_score'], timestamp], function(err, result) {
+        // Insert data to database
+        connection.query('INSERT INTO sensor_data2 (user, sb_l_weight, \
+                          sb_r_weight, sf_l_weight, sf_r_weight, st, bl, bu, \
+                          sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, correct, score, timestamp) \
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                         [user, sb_l, sb_r, sf_l, sf_r, st, bl, bu, 
+                          posture_data['sb_l_perc'], posture_data['sb_r_perc'], 
+                          posture_data['sf_l_perc'], posture_data['sf_r_perc'], 
+                          posture_data['correct_posture'], posture_data['posture_score'], 
+                          timestamp], function(err, result) {
             if (err) res.end('Post request database query error.');
         });
+    }
+});
+
+router.post('/user', function(req, res) {
+    var user = req.body.user;
+
+    if (user === 'undefined' || user === null || !user) {
+        res.end('User not defined.');
+    } else {
+        cur_user = user;
+        res.end('Current user is ' + user);
     }
 });
 
