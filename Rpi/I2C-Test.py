@@ -14,6 +14,7 @@ bus = smbus.SMBus(1)
 URL = "http://pstr-env.us-east-2.elasticbeanstalk.com:80"
 
 addresses = [0x04, 0x08] #08 IS ARDUINO
+mcu = 0
 
 def writeNumber(mcu, value):
     bus.write_byte(addresses[mcu], value)
@@ -33,29 +34,31 @@ while True:
     #mcu = input("Enter 0, 1: ")
     var = 255
     mcu = 0
-    
+   
+ 
     if not var: continue
     
-    writeNumber(mcu, var) # --> Can be changed to send letter or something
-    print "RPI: Hi Arduino, I sent you ", var
+    for mcu in range(2):
+        writeNumber(mcu, var) # --> Can be changed to send letter or something
+        print "RPI: Hi mcu",mcu,", I sent you ", var
     
-    num_bytes = readNumber(mcu) # Arduino responds with number of bytes in data string
-    print "Bytes number is: ", num_bytes
-    time.sleep(.2)
+        num_bytes = readNumber(mcu) # Arduino responds with number of bytes in data string
+        print "Bytes number is: ", num_bytes
+        time.sleep(.2)
 
-    # Receive every byte transmitted from slave and recreate data string
-    for i in xrange(num_bytes):
-        writeNumber(mcu, i)
-        char = readNumber(mcu)
-        msg += chr(char)
+        # Receive every byte transmitted from slave and recreate data string
+        for i in xrange(num_bytes):
+            writeNumber(mcu, i)
+            char = readNumber(mcu)
+            msg += chr(char)
 
-    ##### Json parsing to post w/ real data #####
-    a = msg.split(",")
-    a.pop() # Popping empty string of last element from comma split
-    for i in a:
-        b.append(i.split(":"))
-    for i in b:
-        data[i[0]] = abs(float(i[1]))
+      ##### Json parsing to post w/ real data #####
+      a = msg.split(",")
+      a.pop() # Popping empty string of last element from comma split
+      for i in a:
+          b.append(i.split(":"))
+      for i in b:
+          data[i[0]] = abs(float(i[1]))
     #make post request here
     # Add text to data with orig.update(new) #
 
