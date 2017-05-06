@@ -139,7 +139,7 @@ float read_calibrated_value(uint8_t sensor_id){
   int32_t avg_offset;
  
   float calib_val=0;
-  avg = read_avg_force(sensor_id, 2);
+  avg = read_avg_force(sensor_id, 1);
   avg_offset = ((int32_t)avg-SENSORS[sensor_id].CALIB_OFFSET);
   //printf("avg_offset:%li\n\r",avg_offset);
   calib_val = (float)avg_offset/SENSORS[sensor_id].CALIB_FACTOR;

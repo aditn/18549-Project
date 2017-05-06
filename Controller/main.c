@@ -32,7 +32,7 @@ int main(void)
    // Setup Sensors
    sensor_init();
 
-   printf("Debounce...\n");
+   //printf("Debounce...\n");
    _delay_ms(1000*10);
 
    // tare force sensors
