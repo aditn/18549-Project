@@ -7,6 +7,7 @@ import requests
 import json
 import datetime
 
+time.sleep(17);
 
 # for RPI version 1, use “bus = smbus.SMBus(0)”
 bus = smbus.SMBus(1)
@@ -38,12 +39,12 @@ while True:
  
     if not var: continue
     
-    for mcu in range(2):
+    for mcu in range(len(addresses)):
         writeNumber(mcu, var) # --> Can be changed to send letter or something
-        print "RPI: Hi mcu",mcu,", I sent you ", var
+        #print "RPI: Hi mcu",mcu,", I sent you ", var
     
         num_bytes = readNumber(mcu) # Arduino responds with number of bytes in data string
-        print "Bytes number is: ", num_bytes
+        #print "Bytes number is: ", num_bytes
         time.sleep(.2)
 
         # Receive every byte transmitted from slave and recreate data string
@@ -52,13 +53,15 @@ while True:
             char = readNumber(mcu)
             msg += chr(char)
 
-      ##### Json parsing to post w/ real data #####
-      a = msg.split(",")
-      a.pop() # Popping empty string of last element from comma split
-      for i in a:
-          b.append(i.split(":"))
-      for i in b:
-          data[i[0]] = abs(float(i[1]))
+     ##### Json parsing to post w/ real data #####
+ #   print(msg)
+    a = msg.split(",")
+    a[len(a)-1] = a[len(a)-1].split('\n')[0]
+    #print repr(a.pop()) # Popping empty string of last element from comma split
+    for i in a:
+        b.append(i.split(":"))
+    for i in b:
+        data[i[0]] = abs(float(i[1]))
     #make post request here
     # Add text to data with orig.update(new) #
 
