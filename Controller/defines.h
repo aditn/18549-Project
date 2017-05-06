@@ -3,13 +3,13 @@
 #define BAUD 115200
 
 /*** LOAD SENSOR MCU ***/
-#define NUMBER_OF_SENSORS 4
-#define SLAVE_ADDRESS 0x04
+//#define NUMBER_OF_SENSORS 4
+//#define SLAVE_ADDRESS 0x04
 /*** LOAD SENSOR MCU ***/
 
 /*** FSR MCU ***/
-// #define NUMBER_OF_SENSORS 3
-// #define SLAVE_ADDRESS 0x08
+#define NUMBER_OF_SENSORS 3
+#define SLAVE_ADDRESS 0x08
 /*** FSR MCU ***/
 
 #define SENSOR0 0

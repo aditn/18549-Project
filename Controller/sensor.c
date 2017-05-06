@@ -10,51 +10,51 @@
 void sensor_init(){
 
   /************ LOAD CELL MCU **************/
-  DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
-  DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
+  //DDRC |= (1<<PC0); // Set PC0(clk) as an output pin
+  //DDRC &= ~(1<<PC1); // Set PC1(data) as input pin
 
-  SENSORS[SENSOR0].CLK = PC0;
-  SENSORS[SENSOR0].DATA = PC1;
-  SENSORS[SENSOR0].DIR_REG = &DDRC;
-  SENSORS[SENSOR0].PORT_OUTPUT_REG = &PORTC;
-  SENSORS[SENSOR0].PORT_INPUT_REG = &PINC;
-  SENSORS[SENSOR0].CALIB_FACTOR = -12000;
+  //SENSORS[SENSOR0].CLK = PC0;
+  //SENSORS[SENSOR0].DATA = PC1;
+  //SENSORS[SENSOR0].DIR_REG = &DDRC;
+  //SENSORS[SENSOR0].PORT_OUTPUT_REG = &PORTC;
+  //SENSORS[SENSOR0].PORT_INPUT_REG = &PINC;
+  //SENSORS[SENSOR0].CALIB_FACTOR = -12000;
 
   /* Initializing second sensor */
-  DDRC |= (1<<PC2); // Set P(clk) as an output pin
-  DDRC &= ~(1<<PC3); // Set PC3(data) as input pin
+  //DDRC |= (1<<PC2); // Set P(clk) as an output pin
+  //DDRC &= ~(1<<PC3); // Set PC3(data) as input pin
 
-  SENSORS[SENSOR1].CLK = PC2;
-  SENSORS[SENSOR1].DATA = PC3;
-  SENSORS[SENSOR1].DIR_REG = &DDRC;
-  SENSORS[SENSOR1].PORT_OUTPUT_REG = &PORTC;
-  SENSORS[SENSOR1].PORT_INPUT_REG = &PINC;
-  SENSORS[SENSOR1].CALIB_FACTOR = -11000;
+  //SENSORS[SENSOR1].CLK = PC2;
+  //SENSORS[SENSOR1].DATA = PC3;
+  //SENSORS[SENSOR1].DIR_REG = &DDRC;
+  //SENSORS[SENSOR1].PORT_OUTPUT_REG = &PORTC;
+  //SENSORS[SENSOR1].PORT_INPUT_REG = &PINC;
+  //SENSORS[SENSOR1].CALIB_FACTOR = -11000;
   /* Initializing second sensor */
 
 
   /* Initializing THIRD PORTD sensor */
-  DDRD |= (1<<PD7); // Set PD7(clk) as an output pin
-  DDRD &= ~(1<<PD6); // Set PD6(data) as input pin
+  //DDRD |= (1<<PD7); // Set PD7(clk) as an output pin
+  //DDRD &= ~(1<<PD6); // Set PD6(data) as input pin
 
-  SENSORS[SENSOR2].CLK = PD7;
-  SENSORS[SENSOR2].DATA = PD6;
-  SENSORS[SENSOR2].DIR_REG = &DDRD;
-  SENSORS[SENSOR2].PORT_OUTPUT_REG = &PORTD;
-  SENSORS[SENSOR2].PORT_INPUT_REG = &PIND;
-  SENSORS[SENSOR2].CALIB_FACTOR = -11000;
+  //SENSORS[SENSOR2].CLK = PD7;
+  //SENSORS[SENSOR2].DATA = PD6;
+  //SENSORS[SENSOR2].DIR_REG = &DDRD;
+  //SENSORS[SENSOR2].PORT_OUTPUT_REG = &PORTD;
+  //SENSORS[SENSOR2].PORT_INPUT_REG = &PIND;
+  //SENSORS[SENSOR2].CALIB_FACTOR = -11000;
   /* Initializing THIRD PORTD sensor */
 
   /* Initializing FOURTH PORTB sensor */
-  DDRB |= (1<<PB5); // Set PB5(clk) as an output pin
-  DDRB &= ~(1<<PB4); // Set PB4(data) as input pin
+  //DDRB |= (1<<PB5); // Set PB5(clk) as an output pin
+  //DDRB &= ~(1<<PB4); // Set PB4(data) as input pin
 
-  SENSORS[SENSOR3].CLK = PB5;
-  SENSORS[SENSOR3].DATA = PB4;
-  SENSORS[SENSOR3].DIR_REG = &DDRB;
-  SENSORS[SENSOR3].PORT_OUTPUT_REG = &PORTB;
-  SENSORS[SENSOR3].PORT_INPUT_REG = &PINB;
-  SENSORS[SENSOR3].CALIB_FACTOR = -11000;
+  //SENSORS[SENSOR3].CLK = PB5;
+  //SENSORS[SENSOR3].DATA = PB4;
+  //SENSORS[SENSOR3].DIR_REG = &DDRB;
+  //SENSORS[SENSOR3].PORT_OUTPUT_REG = &PORTB;
+  //SENSORS[SENSOR3].PORT_INPUT_REG = &PINB;
+  //SENSORS[SENSOR3].CALIB_FACTOR = -11000;
   /* Initializing THIRD PORTD sensor */
   /************ LOAD CELL MCU **************/
 
@@ -70,6 +70,7 @@ uint16_t adc_read(uint8_t adcx) {
    * just 'OR' the pin's number with ADMUX to select that pin.
    * We first zero the four bits by setting ADMUX equal to its higher
    * four bits. */
+
   ADMUX &=  0xf0;
   ADMUX |=  adcx;
 
@@ -81,10 +82,12 @@ uint16_t adc_read(uint8_t adcx) {
    * set above, to see if it is still set.  This bit is automatically
    * reset (zeroed) when the conversion is ready so if we do this in
    * a loop the loop will just go until the conversion is ready. */
-  while ( ADCSRA & _BV(ADIF) );
+  while (!( ADCSRA & _BV(ADIF)) );
 
   uint16_t adcV = ADC;
   ADCSRA |= _BV(ADIF);
+  //printf("adcV:%d\n\r",adcV);
+
 
   /* Finally, we return the converted value to the calling function. */
   return adcV;
@@ -92,7 +95,7 @@ uint16_t adc_read(uint8_t adcx) {
 
 void adc_init(){
    // disable interrupts
-   cli();
+   //cli();
 
    // Set the ADC prescaler to 128 (i.e., 16MHz/128 = 125KHz)
    ADCSRA |= ( 1 << ADPS2 ) | ( 1 << ADPS1 ) | ( 1 << ADPS0 );
@@ -105,10 +108,10 @@ void adc_init(){
 
    // Do the initial conversion (i.e., the slowest conversion)
    // to ensure that everything is up and running.
-   ADCSRA |= ( 1 << ADSC );
-   
+   //ADCSRA |= ( 1 << ADSC );
+  
    //enable interrupts
-   sei();
+   //sei();
 }
 
 uint32_t read_avg_force(uint8_t sensor_id, uint8_t times){
@@ -184,10 +187,9 @@ void collectforceData(float* data){
 
 void read_FSR(float* data) {
   data[SENSOR0] = adc_read(PC0);
-  //data[SENSOR1] = adc_read(PC1);
-  //data[SENSOR2] = adc_read(PC2);
+  data[SENSOR1] = adc_read(PC1);
+  data[SENSOR2] = adc_read(PC2);
 }
-
 
 void LED_green_on(){
   DDRC |= (1<<PC0);

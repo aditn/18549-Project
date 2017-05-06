@@ -2,7 +2,6 @@
   main.c
 */
 
-//#include "serial.h"
 #include "sensor.h"
 #include "uart_test.h"
 #include "I2CSlave.h"
@@ -22,29 +21,32 @@ int main(void)
    stdin  = &uart_input;
    //char input;
 
-   // Setup ports
+   // Turn on LED
    DDRB |= (1<<1) | (1<<0);
    PORTB |= (1<<0);
    PORTB &= ~(1<<1);
-   
-   
-   
+
    // Setup Sensors
    sensor_init();
+   
 
    /**** LOAD CELL MCU ****/
-   _delay_ms(1000*10); // Debounce load cell signal
-   tare();
+   //_delay_ms(1000*10); // Debounce load cell signal
+   //tare();
    /**** LOAD CELL MCU ****/
 
-   printf("Tared, doing I2C\r\n");
+   //printf("Tared, doing I2C\r\n");
    // Setup I2C
    I2C_setCallbacks(I2C_received, I2C_requested);
    I2C_init(SLAVE_ADDRESS);
 
+   // Setup ADC
+   adc_init();
+
    printf("READY\r\n");
    while(1){
      //collectforceData(fData);
+     //_delay_ms(1000);
      //read_FSR(fData);
      //sendData(fData);
    }
