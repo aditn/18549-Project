@@ -14,6 +14,7 @@ bus = smbus.SMBus(1)
 URL = "http://pstr-env.us-east-2.elasticbeanstalk.com:80"
 
 addresses = [0x04, 0x08] #08 IS ARDUINO
+sleepTimes = [0.1,0]
 mcu = 0
 
 def writeNumber(mcu, value):
@@ -44,7 +45,7 @@ while True:
     
         num_bytes = readNumber(mcu) # Arduino responds with number of bytes in data string
         print "Bytes number is: ", num_bytes
-        time.sleep(.2)
+        time.sleep(sleepTimes[i])
 
         # Receive every byte transmitted from slave and recreate data string
         for i in xrange(num_bytes):
