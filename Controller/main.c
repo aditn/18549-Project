@@ -43,7 +43,7 @@ int main(void)
    // Setup ADC
    adc_init();
 
-   printf("READY\r\n");
+   //printf("READY\r\n");
    while(1){
      //collectforceData(fData);
      //_delay_ms(1000);

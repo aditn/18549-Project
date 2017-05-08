@@ -60,7 +60,7 @@ void sensor_init(){
 
 
   /**************** FSR MCU ****************/
-  //DDRC &= (~_BV(PC2) | ~_BV(PC1) | ~_BV(PC0)); // Set ADC pins PC(2-0) as input pins
+  DDRC &= (~_BV(PC2) | ~_BV(PC1) | ~_BV(PC0)); // Set ADC pins PC(2-0) as input pins
   /**************** FSR MCU ****************/
 }
 
