@@ -16,5 +16,5 @@ while True:
     print 'sf_l (s4): ' + str(json['sf_l_weight'])
     print 'st (fsr1): ' + str(json['st'])
     print 'bl (fsr2): ' + str(json['bl'])
-    print 'bu (fsr3): ' + str(json['bl'])
+    print 'bu (fsr3): ' + str(json['bu'])
     time.sleep(1)
