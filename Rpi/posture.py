@@ -41,7 +41,11 @@ MEAS_FRONT_WEIGHT_PERC = MEAS_FRONT_WEIGHT/(MEAS_BACK_WEIGHT+MEAS_FRONT_WEIGHT)
 # Weight must be distributed evenly on left and right of cushion +- acceptable range
 # Weight on front and back of seat cushion must be at the theoretical proportions +- acceptable range
 # Weight must be greater that the minimum weight
-if SB_L < SB_R * (1-ACCEPTABLE_RANGE) or SB_L > SB_R * (1+ACCEPTABLE_RANGE) or MEAS_BACK_WEIGHT_PERC < STD_BACK_WEIGHT_PERC - ACCEPTABLE_RANGE or MEAS_BACK_WEIGHT_PERC > MEAS_BACK_WEIGHT_PERC + ACCEPTABLE_RANGE or ST < MIN_WEIGHT or BL < MIN_WEIGHT or BU < MIN_WEIGHT:
+if SB_L < SB_R * (1-ACCEPTABLE_RANGE) or
+   SB_L > SB_R * (1+ACCEPTABLE_RANGE) or
+   MEAS_BACK_WEIGHT_PERC < STD_BACK_WEIGHT_PERC - ACCEPTABLE_RANGE or
+   MEAS_BACK_WEIGHT_PERC > MEAS_BACK_WEIGHT_PERC + ACCEPTABLE_RANGE or
+   ST < MIN_WEIGHT or BL < MIN_WEIGHT or BU < MIN_WEIGHT:
     correct_posture = 0
     print "Incorrect posture"
 else:
@@ -49,7 +53,10 @@ else:
     print "Correct posture"
 
 # Posture score calculation
-# 1 - (deviation from theoretical seat cushion back weight + deviation from seat cushion front weight) -(deviation of each side weight from 50%)
-posture_score = 1 - abs(STD_BACK_WEIGHT_PERC - MEAS_BACK_WEIGHT_PERC) - abs(STD_FRONT_WEIGHT_PERC - MEAS_FRONT_WEIGHT_PERC) - abs(0.5 - SB_R/(SB_L + SB_R))*2
+# 1 - (deviation from theoretical seat cushion back weight +
+# deviation from seat cushion front weight) -(deviation of each side weight from 50%)
+posture_score = 1 - abs(STD_BACK_WEIGHT_PERC - MEAS_BACK_WEIGHT_PERC) -
+                    abs(STD_FRONT_WEIGHT_PERC - MEAS_FRONT_WEIGHT_PERC) -
+                    abs(0.5 - SB_R/(SB_L + SB_R))*2
 print "Posture Score: " + str(posture_score)
 
