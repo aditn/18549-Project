@@ -18,6 +18,11 @@ addresses = [0x04, 0x08] #08 IS ARDUINO
 sleepTimes = [0.1,0]
 mcu = 0
 
+sensor1_calib_factor = 10569
+sensor2_calib_factor = 12312
+sensor3_calib_factor = 16923
+sensor4_calib_factor = 5077
+
 def writeNumber(mcu, value):
     bus.write_byte(addresses[mcu], value)
     return -1
@@ -46,7 +51,7 @@ while True:
     
         num_bytes = readNumber(mcu) # Arduino responds with number of bytes in data string
         #print "Bytes number is: ", num_bytes
-        time.sleep(sleepTimes[i])
+        time.sleep(sleepTimes[mcu])
 
         # Receive every byte transmitted from slave and recreate data string
         for i in xrange(num_bytes):
@@ -66,6 +71,11 @@ while True:
     #make post request here
     # Add text to data with orig.update(new) #
 
+    data['sensor1'] = (data['sensor1']*12000)/sensor1_calib_factor
+    data['sensor2'] = (data['sensor2']*11000)/sensor2_calib_factor
+    data['sensor3'] = (data['sensor3']*11000)/sensor3_calib_factor
+    data['sensor4'] = (data['sensor4']*11000)/sensor4_calib_factor
+    
     print data
     #data.update({"sensor3": 100, "sensor4": 100, "text": "Demo test"})
 
