@@ -81,11 +81,18 @@ while True:
 
     json_data = json.dumps(data)
     headers = {'content-type': 'application/json'}
-    r = requests.post(url=URL, data=json_data, headers=headers)
+
+    tries = 0
+    while tries < 3:
+        try:
+            r = requests.post(url=URL, data=json_data, headers=headers, timeout=2)
+        except requests.exceptions.RequestException as e:
+            print e
+        tries += 1
+
     print r.text # Received request or not
     ##### Json parsing to post w/ real data #####
 
-    
     #print "Data we sent is: ", data
 
     print

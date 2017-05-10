@@ -5,10 +5,10 @@ import json
 URL = "http://localhost:3000"
 
 data = {}
-data['sensor1'] = 50
-data['sensor2'] = 50
-data['sensor3'] = 22
-data['sensor4'] = 22
+data['sensor1'] = 30
+data['sensor2'] = 40
+data['sensor3'] = 4
+data['sensor4'] = 3
 data['fsr1'] = 7;
 data['fsr2'] = 4;
 data['fsr3'] = 4;
