@@ -43,10 +43,10 @@ const simulat_data_max = 100;
 
 // Constants for posture checking
 const acceptable_range = 0.15; // acceptable deviation from expected proportions
-const min_weight = 3; // minimum weight to be detected as seated
+const min_weight = 10; // minimum weight (kg) to be detected as seated
 const std_back_weight_perc = 0.8; // theoretical weight on butt and back of chair 
 const std_front_weight_perc = 1 - std_back_weight_perc; // theoretical weight on front of chair
-const data_array = ['seated', 'sb_l_perc', 'sb_r_perc', 'sf_l_perc', 'sf_r_perc', 'correct_posture', 'posture_score'];
+const data_array = ['seated', 'sb_l_perc', 'sb_r_perc', 'sf_l_perc', 'sf_r_perc', 'correct_posture', 'posture_score', 'posture_status'];
 /**
  * Returns JSON object with weight distribution percentages and posture correctness and score
  */
@@ -61,7 +61,7 @@ function checkPosture(sb_l, sb_r, sf_l, sf_r, st, bl, bu) {
     var meas_back_weight_perc = 0;
     var meas_front_weight_perc = 0;
     
-    if (sb_l < min_weight || sb_r < min_weight || sf_l < min_weight || sf_r < min_weight) {
+    if (sb_l + sb_r + sf_l + sf_r < min_weight) {
         // if not seated, set all percentages and scores to 0
         for (i = 0; i < data_array.length; i++) {
             json_data[data_array[i]] = 0;
@@ -70,45 +70,127 @@ function checkPosture(sb_l, sb_r, sf_l, sf_r, st, bl, bu) {
     } else {
         // seated
         seated = 1;
-        var meas_back_weight = sb_l + sb_r + st + bl + bu;
+        var meas_back_weight = sb_l + sb_r;
         var meas_front_weight = sf_l + sf_r;
 
         // calculate back and front weight percentages
         meas_back_weight_perc = meas_back_weight/(meas_back_weight+meas_front_weight);
         meas_front_weight_perc = meas_front_weight/(meas_back_weight+meas_front_weight);
-
+        
+        // binary posture check
         if (sb_l < sb_r * (1-acceptable_range) || sb_l > sb_r * (1+acceptable_range) 
                 || meas_back_weight_perc < std_back_weight_perc - acceptable_range 
                 || meas_back_weight_perc > std_back_weight_perc + acceptable_range 
-                || st < min_weight || bl < min_weight || bu < min_weight) {
+                || st <= 0 || bl <= 0 || bu <= 0) {
             correct_posture = 0;
         } else {
             correct_posture = 1;
         }
 
+        // calculate posture score
         posture_score = Math.max(0,
                         1 - Math.abs(std_back_weight_perc - meas_back_weight_perc) 
                         - Math.abs(std_front_weight_perc - meas_front_weight_perc) 
                         - Math.abs(0.5 - sb_r/(sb_l + sb_r))*2);
+        if (st <= 0) posture_score -= 0.05;
+        if (bl <= 0) posture_score -= 0.05;
+        if (bu <= 0) posture_score -= 0.05;
 
+        // seat left and right weight percentages
         var left_perc = (sb_l + sf_l) / (sb_l + sf_l + sb_r + sf_r);
         var right_perc = 1 - left_perc;
 
-        var sb_l_perc = meas_back_weight_perc * left_perc;
-        var sb_r_perc = meas_back_weight_perc * right_perc;
-        var sf_l_perc = meas_front_weight_perc * left_perc;
-        var sf_r_perc = meas_front_weight_perc * right_perc;
-        sb_l_perc = sb_l_perc - std_back_weight_perc/2 + 0.25;
-        sb_r_perc = sb_r_perc - std_back_weight_perc/2 + 0.25;
-        sf_l_perc = sf_l_perc - std_front_weight_perc/2 + 0.25;
-        sf_r_perc = sf_r_perc - std_front_weight_perc/2 + 0.25;
+        // calculate weight percentages on each portion of the seat cushion
+        var sb_l_perc_raw = (meas_back_weight_perc*left_perc); 
+        var sb_r_perc_raw = (meas_back_weight_perc*right_perc); 
+        var sf_l_perc_raw = (meas_front_weight_perc*left_perc); 
+        var sf_r_perc_raw = (meas_front_weight_perc*right_perc); 
+        
+        var sb_l_perc = sb_l_perc_raw - (std_back_weight_perc/2) + 0.25;
+        var sb_r_perc = sb_r_perc_raw - (std_back_weight_perc/2) + 0.25;
+        var sf_l_perc = sf_l_perc_raw - (std_front_weight_perc/2) + 0.25;
+        var sf_r_perc = sf_r_perc_raw - (std_front_weight_perc/2) + 0.25;
 
+        console.log(sb_l_perc_raw);
+
+        var posture_status = postureStatus(sb_l_perc_raw, sb_r_perc_raw, 
+                sf_l_perc_raw, sf_r_perc_raw, 
+                st, bl, bu,
+                left_perc, right_perc,
+                meas_back_weight_perc, meas_front_weight_perc);
+
+        // put values into JSON
         for (i = 0; i < data_array.length; i++) {
             json_data[data_array[i]] = eval(data_array[i]);
         }
-
         return json_data;
     }
+}
+
+// Posture status strings
+const status_strings = ['Good posture',
+                        'You are sitting too far forward in your seat',
+                        'You are slouching down too much',
+                        'You are leaning too far forward',
+                        'Your shoulders are too slouched',
+                        'Your weight is too much to the left',
+                        'Your weight is too much to the right']
+// Examines weight percentages and determines status of current posture
+function postureStatus(sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, st, bl, bu, 
+        left_perc, right_perc, meas_back_weight_perc, meas_front_weight_perc) {
+    var posture_status = null;
+
+    // Determine vertical posture
+    if (left_perc < 0.5+ acceptable_range 
+            && left_perc > 0.5 - acceptable_range
+            //&& meas_back_weight_perc > std_back_weight_perc - acceptable_range 
+            && meas_back_weight_perc < std_back_weight_perc + acceptable_range 
+            && st > min_weight && bl > min_weight && bu > min_weight) {
+        // Good
+        posture_status = status_strings[0];
+    } else if (st <= 0 && bl <= 0 && bu <= 0) {
+        // sitting too far forward
+        posture_status = status_strings[1];
+    } else if (st <= 0 && (bl > 0 || bu > 0)) {
+        // butt too forward
+        posture_status = status_strings[2];
+    } else if (st > 0 && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range)) {
+        // leaning forward
+        posture_status = status_strings[3];
+    } else if (st <= 0) {
+        // slouched shoulders
+        posture_status = status_strings[4];
+    } 
+
+    // Determine horizontal posture
+    if (left_perc > 0.5+acceptable_range) {
+        // leaning too left
+        if (posture_status !== null) {
+            posture_status = posture_status + ', and ' + toLowerCase(status_strings[5]);
+        } else {
+            posture_status = status_strings[5];
+        }
+    } else if (right_perc > 0.5+acceptable_range) {
+        // leaning too right
+        if (posture_status !== null) {
+            posture_status = posture_status + ', and ' + toLowerCase(status_strings[6]);
+        } else {
+            posture_status = status_strings[6];
+        }
+    }
+
+    // Add period to end, else send error message if status is null
+    if (posture_status !== null) {
+        posture_status = posture_status + '.';
+    } else {
+        posture_status = '';
+        /*posture_status = 'ERROR NO STATUS. sb_l: ' + sb_l_perc
+                            + ' sb_r: ' + sb_r_perc
+                            + ' sf_l: ' + sf_l_perc
+                            + ' sf_r: ' + sf_r_perc;*/
+    }
+
+    return posture_status;
 }
 
 // Get random sensor data for testing
@@ -145,14 +227,14 @@ router.get('/data2', function(req, res){
     // If number specified, get N rows from database, else get all rows
     if (typeof num === 'undefined' || num === null) {
         console.log(user);
-        connection.query('SELECT * FROM sensor_data2 WHERE user=\'' + user + '\'', function(err, results) {
+        connection.query('SELECT * FROM sensor_data3 WHERE user=\'' + user + '\'', function(err, results) {
             if (err) res.end('GET request database query error.');
             var json_text = JSON.stringify(results);
             var data = JSON.parse(json_text);
             res.json(data);
         });
     } else {
-        connection.query('SELECT * FROM (SELECT * FROM sensor_data2 WHERE user=\'' + user + '\' ORDER BY id DESC LIMIT ' + num + ') sub ORDER BY id ASC', function(err, results) {
+        connection.query('SELECT * FROM (SELECT * FROM sensor_data3 WHERE user=\'' + user + '\' ORDER BY id DESC LIMIT ' + num + ') sub ORDER BY id ASC', function(err, results) {
             if (err) res.end('GET request database query error.');
             var json_text = JSON.stringify(results);
             var data = JSON.parse(json_text);
@@ -197,9 +279,6 @@ router.get('/', function(req, res) {
 
 // On POST request, perform posture checking and add weights and proportions to database
 router.post('/', function(req, res) {
-    res.end('Received');
-    console.log(req.body);
-
     let timestamp = new Date();
     dateformat(timestamp, 'yyyymmddhhmmss');
 
@@ -209,46 +288,49 @@ router.post('/', function(req, res) {
     var sb_r = req.body.sensor2;
     var sf_l = req.body.sensor4;
     var sf_r = req.body.sensor3;
-    var st = req.body.fsr1;
-    var bl = req.body.fsr2;
-    var bu = req.body.fsr3;
+    var st = Math.min(req.body.fsr1, 0.25);
+    var bl = Math.min(req.body.fsr2, 0.25);
+    var bu = Math.min(req.body.fsr3, 0.25);
 
     // Check posture
     var posture_data = checkPosture(sb_l, sb_r, sf_l, sf_r, st, bl, bu);
 
-
     if (posture_data['seated'] == 0) {
-        //res.end('Not Seated');
+        res.end('Not Seated');
         // Insert data to database
-        connection.query('INSERT INTO sensor_data2 (user, sb_l_weight, \
+        connection.query('INSERT INTO sensor_data3 (user, sb_l_weight, \
                           sb_r_weight, sf_l_weight, sf_r_weight, st, bl, bu, \
-                          sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, correct, score, timestamp) \
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                          sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, \
+                          seated, correct, score, status_msg, timestamp) \
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
                          [user, sb_l, sb_r, sf_l, sf_r, st, bl, bu, 
                           posture_data['sb_l_perc'], posture_data['sb_r_perc'], 
                           posture_data['sf_l_perc'], posture_data['sf_r_perc'], 
-                          posture_data['correct_posture'], posture_data['posture_score'], 
+                          posture_data['seated'], posture_data['correct_posture'], 
+                          posture_data['posture_score'], posture_data['posture_status'], 
                           timestamp], function(err, result) {
-            if (err) console.log('Post request database query error.');
+            if (err) res.end('Post request database query error.');
         });
     } else {
-        /*if (posture_data['correct_posture'] == 0) {
-            res.end("Incorrect Posture. Score: " + posture_data['posture_score']);
+        if (posture_data['correct_posture'] == 0) {
+            res.end("Incorrect Posture. " + posture_data['posture_status'] + " Score: " + posture_data['posture_score']);
         } else {
-            res.end("Correct Posture. Score: " + posture_data['posture_score']);
-        }*/
+            res.end("Correct Posture. " + posture_data['posture_status'] + " Score: " + posture_data['posture_score']);
+        }
 
         // Insert data to database
-        connection.query('INSERT INTO sensor_data2 (user, sb_l_weight, \
+        connection.query('INSERT INTO sensor_data3 (user, sb_l_weight, \
                           sb_r_weight, sf_l_weight, sf_r_weight, st, bl, bu, \
-                          sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, correct, score, timestamp) \
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                          sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, \
+                          seated, correct, score, status_msg, timestamp) \
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
                          [user, sb_l, sb_r, sf_l, sf_r, st, bl, bu, 
                           posture_data['sb_l_perc'], posture_data['sb_r_perc'], 
                           posture_data['sf_l_perc'], posture_data['sf_r_perc'], 
-                          posture_data['correct_posture'], posture_data['posture_score'], 
+                          posture_data['seated'], posture_data['correct_posture'], 
+                          posture_data['posture_score'], posture_data['posture_status'], 
                           timestamp], function(err, result) {
-            if (err) console.log('Post request database query error.');
+            if (err) res.end('Post request database query error.');
         });
     }
 });
