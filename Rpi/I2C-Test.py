@@ -37,13 +37,9 @@ while True:
     a=[]
     b=[]
     data={}
-    #var = input("Enter number (255 to begin data collection): ")
-    #mcu = input("Enter 0, 1: ")
     var = 255
     mcu = 0
-   
- 
-    if not var: continue
+    
     
     for mcu in range(len(addresses)):
         writeNumber(mcu, var) # --> Can be changed to send letter or something
