@@ -173,7 +173,7 @@ function postureStatus(sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, st, bl, bu,
     } else if (right_perc > 0.5+acceptable_range) {
         // leaning too right
         if (posture_status !== null) {
-            posture_status = posture_status + ', and ' + status_string[6].toLowerCase();
+            posture_status = posture_status + ', and ' + status_strings[6].toLowerCase();
         } else {
             posture_status = status_strings[6];
         }
