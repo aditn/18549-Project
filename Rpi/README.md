@@ -40,8 +40,10 @@ JSON Format: <br />
   'sb_r_perc': (float), // seat cushion back rightweight percentage (0-1) <br />
   'sf_l_perc': (float), // seat cushion front left weight percentage (0-1) <br />
   'sf_r_perc': (float), // seat cushion front right weight percentage (0-1) <br />
+  'seated': (int), // 1 for seated, 0 for not seated <br />  
   'correct': (int), // 1 for correct posture, 0 for incorrect posture <br />
   'score': (float), // posture score (0-1) <br />
+  'status_msg': (String), // status message for usual cases of good/bad posture. will sometimes be empty string for unusual cases <br />
   'timestamp': (timestamp)},
  {...},
  {...}]

@@ -157,7 +157,7 @@ function postureStatus(sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, st, bl, bu,
     } else if (st > 0 && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range)) {
         // leaning forward
         posture_status = status_strings[3];
-    } else if (st <= 0) {
+    } else if (st <= 0 && (sf_l_perc+sf_r_perc) <= std_front_weight_perc+acceptable_range) {
         // slouched shoulders
         posture_status = status_strings[4];
     } 
@@ -166,14 +166,14 @@ function postureStatus(sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, st, bl, bu,
     if (left_perc > 0.5+acceptable_range) {
         // leaning too left
         if (posture_status !== null) {
-            posture_status = posture_status + ', and ' + toLowerCase(status_strings[5]);
+            posture_status = posture_status + ', and ' + status_strings[5].toLowerCase();
         } else {
             posture_status = status_strings[5];
         }
     } else if (right_perc > 0.5+acceptable_range) {
         // leaning too right
         if (posture_status !== null) {
-            posture_status = posture_status + ', and ' + toLowerCase(status_strings[6]);
+            posture_status = posture_status + ', and ' + status_string[6].toLowerCase();
         } else {
             posture_status = status_strings[6];
         }
