@@ -7,9 +7,7 @@ if ($ == undefined) {
  * API
  *
  */
-const get_data_url = "http://pstr-env.us-east-2.elasticbeanstalk.com/data?number=1";
-
-// curl -H "Content-Type: application/json" -X POST -d '{'sensor1':100,'sensor2':100,'sensor3':100,'sensor4':100,'text':'test'}' http://pstr-env.us-east-2.elasticbeanstalk.com:80
+const get_data_url = "http://pstr-env.us-east-2.elasticbeanstalk.com/data2?number=1";
 
 /*
  * @param none
@@ -37,7 +35,8 @@ let renderer,
     scene,
     camera,
     controls,
-    bar;
+    count,
+    last_score;
 let sensor_data = [];
 let sensor_points = [];
 
@@ -65,31 +64,32 @@ function init() {
 
     // add the actual elements
     chair.appendChild(renderer.domElement);
-    bar = new ProgressBar.Line('#progressbar',{
-        strokeWidth: 4,
-        easing: 'easeInOut',
-        trailColor: '#eee',
-        color: '#1cff00'
-    });
-    bar.animate(0.8);
+
+    last_score = sensor_data.score;
+    create_bar();
     // routine
     window.addEventListener('resize', onWindowResize, false);
     return;
 }
-function create_bar() {
-    bar = new ProgressBar.Line('#progressbar',
-    {
+function create_bar(){
+    let bar = new ProgressBar.Line('#progressbar',{
+        strokeWidth: 4,
         easing: 'easeInOut',
+        trailColor: '#ff0000',
+        color: '#00ff00'
     });
-    return;
+    bar.set(last_score);
 }
 function chair_model(size) {
     let h = size * 0.5;
     let geometry = new THREE.Geometry();
-    sensor_points.push(new THREE.Vector3(0, 0, 0));
-    sensor_points.push(new THREE.Vector3(0, 0, -h));
-    sensor_points.push(new THREE.Vector3(h, 0, 0));
-    sensor_points.push(new THREE.Vector3(h, 0, -h));
+    sensor_points.push(new THREE.Vector3(0, 0, 0)); //sb_l_weight
+    sensor_points.push(new THREE.Vector3(0, 0, -h)); //sb_r_weight
+    sensor_points.push(new THREE.Vector3(h, 0, 0)); //sf_l_weight
+    sensor_points.push(new THREE.Vector3(h, 0, -h)); //sf_r_weight
+    sensor_points.push(new THREE.Vector3(0, 0, -h/2 )); //st
+    sensor_points.push(new THREE.Vector3(0, h/3,-h/2)); //bl
+    sensor_points.push(new THREE.Vector3(0, 2*h/3, -h/2));//bu
     geometry.vertices.push(
     // bkleft
     new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, h, 0),
@@ -119,6 +119,11 @@ function onWindowResize() {
  */
 function animate() {
     requestAnimationFrame(animate);
+    count++;
+    // if(count >= 10){
+    //     getSensorData();
+    //     count = 0;
+    // }
     getSensorData();
     controls.update();
     render();
@@ -130,12 +135,25 @@ function create_point(index, data) {
     }
     let geometry = new THREE.SphereGeometry(1);
     let material;
-    if (data <= 25) {
+    if (index <= 3){
+        data = data*100;
+    }
+    if (data <= 5) {
         material = new THREE.MeshBasicMaterial({color: 0xffffff});
+    } else if (data <= 10) {
+        material = new THREE.MeshBasicMaterial({color: 0xa3ffe3});
+    } else if (data <= 20) {
+        material = new THREE.MeshBasicMaterial({color: 0xd6f963});
+    } else if (data <= 30) {
+        material = new THREE.MeshBasicMaterial({color: 0x6aff45});
+    } else if (data <= 40) {
+        material = new THREE.MeshBasicMaterial({color: 0xf9a176});
     } else if (data <= 50) {
-        material = new THREE.MeshBasicMaterial({color: 0x6bf731});
-    } else {
-        material = new THREE.MeshBasicMaterial({color: 0xbe4545});
+        material = new THREE.MeshBasicMaterial({color: 0xffb000});
+    } else if (data <= 60) {
+        material = new THREE.MeshBasicMaterial({color: 0xff8181});
+    }else {
+        material = new THREE.MeshBasicMaterial({color: 0xff0000});
     }
     let sphereInter = new THREE.Mesh(geometry, material);
     sphereInter.position.copy(sensor_points[index]);
@@ -146,12 +164,19 @@ function render() {
     let len = sensor_data.length;
     if (len >= 1) {
         let latest_data = sensor_data[len - 1];
-        create_point(0, latest_data.sensor1);
-        create_point(1, latest_data.sensor2);
-        create_point(2, latest_data.sensor3);
-        create_point(3, latest_data.sensor4);
+        create_point(0, latest_data.sb_l_perc);
+        create_point(1, latest_data.sb_r_perc);
+        create_point(2, latest_data.sf_l_perc);
+        create_point(3, latest_data.sf_r_perc);
+        create_point(4, latest_data.st);
+        create_point(5, latest_data.bl);
+        create_point(6, latest_data.bu);
+        if(latest_data.score != last_score){
+            last_score = latest_data.score;
+            $('svg').remove();
+            create_bar();
+        }
     }
-
     renderer.render(scene, camera);
 }
 
