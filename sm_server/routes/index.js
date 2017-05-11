@@ -197,6 +197,7 @@ router.get('/', function(req, res) {
 
 // On POST request, perform posture checking and add weights and proportions to database
 router.post('/', function(req, res) {
+    res.end('Received');
     console.log(req.body);
 
     let timestamp = new Date();
@@ -217,7 +218,7 @@ router.post('/', function(req, res) {
 
 
     if (posture_data['seated'] == 0) {
-        res.end('Not Seated');
+        //res.end('Not Seated');
         // Insert data to database
         connection.query('INSERT INTO sensor_data2 (user, sb_l_weight, \
                           sb_r_weight, sf_l_weight, sf_r_weight, st, bl, bu, \
@@ -228,14 +229,14 @@ router.post('/', function(req, res) {
                           posture_data['sf_l_perc'], posture_data['sf_r_perc'], 
                           posture_data['correct_posture'], posture_data['posture_score'], 
                           timestamp], function(err, result) {
-            if (err) res.end('Post request database query error.');
+            if (err) console.log('Post request database query error.');
         });
     } else {
-        if (posture_data['correct_posture'] == 0) {
+        /*if (posture_data['correct_posture'] == 0) {
             res.end("Incorrect Posture. Score: " + posture_data['posture_score']);
         } else {
             res.end("Correct Posture. Score: " + posture_data['posture_score']);
-        }
+        }*/
 
         // Insert data to database
         connection.query('INSERT INTO sensor_data2 (user, sb_l_weight, \
@@ -247,7 +248,7 @@ router.post('/', function(req, res) {
                           posture_data['sf_l_perc'], posture_data['sf_r_perc'], 
                           posture_data['correct_posture'], posture_data['posture_score'], 
                           timestamp], function(err, result) {
-            if (err) res.end('Post request database query error.');
+            if (err) console.log('Post request database query error.');
         });
     }
 });
