@@ -5,29 +5,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> PSTR </title>
-    <link rel="stylesheet" type="text/css" href="../../style/normalize.css"/>
+    <link rel="stylesheet" type="text/css" href="../../style/semantic.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../style/common.css"/>
-    <link rel="stylesheet" type="text/css" href="../../style/home.css"/>
+    <link rel="stylesheet" type="text/css" href="./home.css"/>
 </head>
 
 <body>
-    <div class="header title">PSTR</div>
+    <div class="header title">
+        PSTR
+    </div>
 
     <div class="content">
         <div id="chair" class="chair"></div>
         <div id="spectum" class="spectum">
-            <ul class="text">
-                <li> legend </li>
-                <li style="color: #ffffff"><=5%</li>
-                <li style="color: #a3ffe3"><=10%</li>
-                <li style="color: #d6f963"><=20%</li>
-                <li style="color: #6aff45"><=30%</li>
-                <li style="color: #f9a176"><=40%</li>
-                <li style="color: #ffb000"><=50%</li>
-                <li style="color: #ff8181"><=60%</li>
-                <li style="color: #ff0000"><=100%</li>
-            </ul>
-            <label> score </label>
+
+            <h1 id="message" style="min-height:8em">
+            </h1>
+
+            <label id="score"> score </label>
             <div id="progressbar" class="progressbar"></div>
         </div>
     </div>

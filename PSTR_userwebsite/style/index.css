@@ -1,0 +1,9 @@
+.content{
+    padding: 2em;
+    background-color: #fbf6f6;
+    height: 100%;
+}
+
+.column{
+    max-width: 450px;
+}

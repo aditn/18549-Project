@@ -1,4 +1,3 @@
-
 const get_data_url = "http://a47f08cb.ngrok.io";
 const timer_interval = 5000;
 // use jquery ajax to get sensor data
