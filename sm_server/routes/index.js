@@ -79,6 +79,7 @@ function checkPosture(sb_l, sb_r, sf_l, sf_r, st, bl, bu) {
         
         // binary posture check
         if (sb_l < sb_r * (1-acceptable_range) || sb_l > sb_r * (1+acceptable_range) 
+                || sb_r < sb_l * (1-acceptable_range) || sb_r > sb_l * (1+acceptable_range) 
                 || meas_back_weight_perc < std_back_weight_perc - acceptable_range 
                 || meas_back_weight_perc > std_back_weight_perc + acceptable_range 
                 || st <= 0 || bl <= 0 || bu <= 0) {
@@ -113,7 +114,7 @@ function checkPosture(sb_l, sb_r, sf_l, sf_r, st, bl, bu) {
 
         console.log(sb_l_perc_raw);
 
-        var posture_status = postureStatus(sb_l_perc_raw, sb_r_perc_raw, 
+        var posture_status = postureStatus(correct_posture,sb_l_perc_raw, sb_r_perc_raw, 
                 sf_l_perc_raw, sf_r_perc_raw, 
                 st, bl, bu,
                 left_perc, right_perc,
@@ -136,28 +137,24 @@ const status_strings = ['Good posture',
                         'Your weight is too much to the left',
                         'Your weight is too much to the right']
 // Examines weight percentages and determines status of current posture
-function postureStatus(sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, st, bl, bu, 
+function postureStatus(correct_posture,sb_l_perc, sb_r_perc, sf_l_perc, sf_r_perc, st, bl, bu, 
         left_perc, right_perc, meas_back_weight_perc, meas_front_weight_perc) {
     var posture_status = null;
 
     // Determine vertical posture
-    if (left_perc < 0.5+ acceptable_range 
-            && left_perc > 0.5 - acceptable_range
-            //&& meas_back_weight_perc > std_back_weight_perc - acceptable_range 
-            && meas_back_weight_perc < std_back_weight_perc + acceptable_range 
-            && st > min_weight && bl > min_weight && bu > min_weight) {
+    if (correct_posture) {
         // Good
         posture_status = status_strings[0];
     } else if (st <= 0 && bl <= 0 && bu <= 0) {
         // sitting too far forward
         posture_status = status_strings[1];
-    } else if (st <= 0 && (bl > 0 || bu > 0)) {
+    } else if ((bu > 0) && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range)) {
         // butt too forward
         posture_status = status_strings[2];
-    } else if (st > 0 && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range)) {
+    } else if (st > 0 && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range-.6) && (bl<=0) && (bu<=0)) {
         // leaning forward
         posture_status = status_strings[3];
-    } else if (st <= 0 && (sf_l_perc+sf_r_perc) <= std_front_weight_perc+acceptable_range) {
+    } else if (st >= 0 && bl>0 && bu<=0) {
         // slouched shoulders
         posture_status = status_strings[4];
     } 
