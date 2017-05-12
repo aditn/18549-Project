@@ -9,12 +9,6 @@ if ($ == undefined) {
  */
 let get_data_url = "http://pstr-env.us-east-2.elasticbeanstalk.com/data2?number=1";
 
-function httpGet(theUrl){
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
-}
 /*
  * @param none
  * @return a jquery deffered object
@@ -26,6 +20,7 @@ function getSensorData() {
     };
     $.ajax(r).done(function(data){
         sensor_data = data;
+        getSensorData();
     });
     return;
 }
@@ -69,7 +64,7 @@ function init() {
         $('.header').html("Welcome to PSTR, "+vars.user);
     }
     getSensorData();
-    setInterval(getSensorData,500);
+    // setInterval(getSensorData,500);
     camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, .1, 1000);
     camera.position.z = 100;
 
@@ -116,8 +111,8 @@ function chair_model(size) {
     sensor_points.push(new THREE.Vector3(h*f, 0, -h*(1-f))); //sb_r_weight
     sensor_points.push(new THREE.Vector3(h*(1-f), 0, -h*f)); //sf_l_weight
     sensor_points.push(new THREE.Vector3(h*(1-f), 0, -h*(1-f))); //sf_r_weight
-    sensor_points.push(new THREE.Vector3(0, h * (1-f),-h/2)); //bl
-    sensor_points.push(new THREE.Vector3(0, h * 2 * f, -h/2));//bu
+    sensor_points.push(new THREE.Vector3(0, h * (1-f),-h/2)); //bu
+    sensor_points.push(new THREE.Vector3(0, h * 2 * f, -h/2));//bl
     geometry.vertices.push(
     // chair vertices
     new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, h, 0),
@@ -196,8 +191,8 @@ function render() {
             sensor_points_objects.push(create_point(2, latest_data.sf_l_perc));
             sensor_points_objects.push(create_point(3, latest_data.sf_r_perc));
             // create_point(4, latest_data.st);
-            sensor_points_objects.push(create_point(4, latest_data.bl));
-            sensor_points_objects.push(create_point(5, latest_data.bu));
+            sensor_points_objects.push(create_point(4, latest_data.bu));
+            sensor_points_objects.push(create_point(5, latest_data.bl));
             for (obj in sensor_points_objects){
                 scene.add(sensor_points_objects[obj]);
             }
@@ -207,8 +202,8 @@ function render() {
             sensor_points_objects[1].material.copy(getMaterialByData(latest_data.sb_r_perc));
             sensor_points_objects[2].material.copy(getMaterialByData(latest_data.sf_l_perc));
             sensor_points_objects[3].material.copy(getMaterialByData(latest_data.sf_r_perc));
-            sensor_points_objects[4].material.copy(getMaterialByData(latest_data.bl));
-            sensor_points_objects[5].material.copy(getMaterialByData(latest_data.bu));
+            sensor_points_objects[4].material.copy(getMaterialByData(latest_data.bu));
+            sensor_points_objects[5].material.copy(getMaterialByData(latest_data.bl));
         }
         if(latest_data.score != last_score){
             last_score = latest_data.score;
@@ -217,7 +212,7 @@ function render() {
             create_bar();
         }
         if(latest_data.seated){
-            $('#message').html( latest_data.status_msg || "You are sitting correctly!");
+            $('#message').html( latest_data.status_msg || 'calculating...');
         }else{
             $('#message').html( 'Not seated');
         }

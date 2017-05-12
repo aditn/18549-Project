@@ -7,7 +7,7 @@ function getSensorData() {
     };
     $.ajax(r).then(function(data) {
         sensor_data = data;
-        render();
+        // render();
     });
     return;
 }
@@ -28,9 +28,9 @@ function render(){
         row += '<td/>'+data.bu+'</td>';
         row += '<td/>'+data.score+'</td>';
         row+='</tr>';
-        console.log(row);
+        // console.log(row);
         $('#infotable > tbody:first').append(row);
     }
 }
 
-getSensorData();
+// getSensorData();
