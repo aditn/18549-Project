@@ -4,24 +4,42 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title> PSTR </title>
-        <link rel="stylesheet" type="text/css" href="style/normalize.css"/>
+        <link rel="stylesheet" type="text/css" href="style/semantic.min.css"/>
         <link rel="stylesheet" type="text/css" href="style/index.css"/>
     </head>
     <body>
-        <div class="content">
-            <div class="title">
-                Welcome!
+        <div class="ui center aligned grid content">
+            <div class="column">
+                <h2 class="ui teal header">
+                    <div class="content">
+                        Login to use >PSTR<
+                    </div>
+                </h2>
+                <form id="loginForm" class="ui large form">
+                    <div class="field">
+                        <div class="ui input">
+                            <input type="text"
+                                name="username"
+                                placeholder="username"/>
+                        </div>
+                    </div>
+                    <button type="submit" class="ui fluid large button">
+                        Login
+                    </button>
+                    <div class="ui error message"></div>
+                </form>
+                <div class="ui message">
+                    Just want to see?
+
+                    <button class="ui button" onclick="loginAsTest()">
+                        Test
+                    </button>
+                </div>
             </div>
-            <form class="usernameform" id="usernameform">
-                <label>Username: </label>
-                <input class="usernameinput"/>
-                <button type="submit" class="usernamebutton" onClick="submitform()">
-                    Submit
-                </button>
-            </form>
         </div>
         <script type="text/javascript" src="vendor/jquery.min.js"></script>
-        <script type="text/javascript" src="vendor/cookie.js"></script>
+        <script type="text/javascript" src="vendor/semantic.min.js"></script>
+        <script type="text/javascript" src="vendor/lib/cookie.js"></script>
         <script type="text/javascript" src="index.js"></script>
     </body>
 </html>

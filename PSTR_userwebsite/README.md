@@ -1,3 +1,1 @@
-run
-
-> npm start
+open html file to run
