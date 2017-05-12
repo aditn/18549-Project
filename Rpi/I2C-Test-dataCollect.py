@@ -102,3 +102,4 @@ for y in data:
 print data
 target = open(fileName,'w')
 target.write(stats)
+target.close(stats)
