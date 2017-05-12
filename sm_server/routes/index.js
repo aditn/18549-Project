@@ -151,7 +151,7 @@ function postureStatus(correct_posture,sb_l_perc, sb_r_perc, sf_l_perc, sf_r_per
     } else if ((bu > 0) && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range)) {
         // butt too forward
         posture_status = status_strings[2];
-    } else if (st > 0 && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range-.6) && (bl<=0) && (bu<=0)) {
+    } else if (st > 0 && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range-.2) && (bl<=0) && (bu<=0)) {
         // leaning forward
         posture_status = status_strings[3];
     } else if (st >= 0 && bl>0 && bu<=0) {
