@@ -1,45 +1,27 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> PSTR </title>
-    <link rel="stylesheet" type="text/css" href="style/normalize.css"/>
-    <link rel="stylesheet" type="text/css" href="style/style.css"/>
-</head>
-
-<body>
-    <div class="header title">PSTR</div>
-
-    <div class="content">
-        <div id="chair" class="chair"></div>
-        <div id="spectum" class="spectum">
-            <ul class="text">
-                <li> legend </li>
-                <li style="color: #ffffff">0%</li>
-                <li style="color: #ffffff">25%</li>
-                <li style="color: #6bf731">50%</li>
-                <li style="color: #be4545">100%</li>
-                <li> Sitting Correct Percentage </li>
-            </ul>
-            <div id="progressbar" class="progressbar"></div>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title> PSTR </title>
+        <link rel="stylesheet" type="text/css" href="style/normalize.css"/>
+        <link rel="stylesheet" type="text/css" href="style/index.css"/>
+    </head>
+    <body>
+        <div class="content">
+            <div class="title">
+                Welcome!
+            </div>
+            <form class="usernameform" id="usernameform">
+                <label>Username: </label>
+                <input class="usernameinput"/>
+                <button type="submit" class="usernamebutton" onClick="submitform()">
+                    Submit
+                </button>
+            </form>
         </div>
-    </div>
-
-    <div id="indication_bar" class="footer bar"> ======== </div>
-
-    <!-- use this script for demo purpose -->
-    <script type="text/javascript" src="vendor/jquery.min.js"></script>
-    <script type="text/javascript" src="vendor/three.js"></script>
-    <script type="text/javascript" src="vendor/lib/OrbitControls.js"></script>
-    <script type="text/javascript" src="vendor/progressbar.js"></script>
-    <script type="text/javascript" src="main.js"></script>
-
-    <!-- use the following script when try to develop with react  -->
-    <!--
-    <script type="text/javascript" src="index.js"></script>
-    -->
-</body>
-
+        <script type="text/javascript" src="vendor/jquery.min.js"></script>
+        <script type="text/javascript" src="vendor/cookie.js"></script>
+        <script type="text/javascript" src="index.js"></script>
+    </body>
 </html>

@@ -1,0 +1,22 @@
+.content .chair{
+    width: 80%;
+}
+.content .spectum{
+    width: 20%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+.spectum ul{
+    list-style: none;
+}
+.spectum ul li{
+    padding-top: 0.5em;
+}
+.spectum .text{
+    height: 60%;
+}
+.spectum .progressbar{
+    height: 40%;
+    padding: 1em;
+}
