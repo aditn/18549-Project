@@ -42,7 +42,7 @@ const simulat_data_min = 0;
 const simulat_data_max = 100;
 
 // Constants for posture checking
-const acceptable_range = 0.15; // acceptable deviation from expected proportions
+const acceptable_range = 0.1515; // acceptable deviation from expected proportions
 const min_weight = 10; // minimum weight (kg) to be detected as seated
 const std_back_weight_perc = 0.8; // theoretical weight on butt and back of chair 
 const std_front_weight_perc = 1 - std_back_weight_perc; // theoretical weight on front of chair
@@ -154,13 +154,13 @@ function postureStatus(correct_posture,sb_l_perc, sb_r_perc, sf_l_perc, sf_r_per
     } else if (st > 0 && (sf_l_perc+sf_r_perc > std_front_weight_perc+acceptable_range-.2) && (bl<=0) && (bu<=0)) {
         // leaning forward
         posture_status = status_strings[3];
-    } else if (st >= 0 && bl>0 && bu<=0) {
+    } else if (st >= 0 && bl>350 && bu<=100) {
         // slouched shoulders
         posture_status = status_strings[4];
     } 
 
     // Determine horizontal posture
-    if (left_perc > 0.5+acceptable_range) {
+    if (left_perc > 0.45+acceptable_range) {
         // leaning too left
         if (posture_status !== null) {
             posture_status = posture_status + ', and ' + status_strings[5].toLowerCase();
