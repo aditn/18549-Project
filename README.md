@@ -1,14 +1,17 @@
-# SMRT CHAIR
 # PSTR - posture
+Project website:
+<a href="https://www.ece.cmu.edu/~ece549/spring17/team15/website/"> PSTR official website </a>
+Project video link:
+N/A (working on it now)
 
 ### This is a CMU 18549 project done by Team 15 with the following Team members:
- -  Benson Zhang
+ -  Benson Zhang (yaxiangz)
 
- - Adit Namdev
+ - Adit Namdev (anamdev)
 
- - Tony Jin
+ - Tony Jin (tdjin)
 
- - Nikhil Nilakantan
+ - Nikhil Nilakantan (nnilakan)
 
 
 ## System components
